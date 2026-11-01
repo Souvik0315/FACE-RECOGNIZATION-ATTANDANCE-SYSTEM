@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FaceTrack | Registration Submitted</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6f8;
+    color: #172033;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MAIN CARD */
+
+.card {
+    width: 600px;
+    max-width: 92%;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe4e8;
+    border-radius: 10px;
+
+    padding: 45px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 20px rgba(16, 24, 40, 0.08);
+}
+
+/* SUCCESS ICON */
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 22px;
+
+    border-radius: 50%;
+
+    background: #e8f7f1;
+
+    color: #087f63;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 38px;
+    font-weight: bold;
+}
+
+/* TITLE */
+
+h1 {
+    font-size: 28px;
+
+    color: #172033;
+
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    color: #667085;
+
+    max-width: 480px;
+
+    margin: 0 auto 28px;
+}
+
+/* INFORMATION BOX */
+
+.info-box {
+    background: #f8fafb;
+
+    border: 1px solid #e1e6ea;
+
+    border-radius: 8px;
+
+    padding: 20px;
+
+    text-align: left;
+
+    margin-bottom: 24px;
+}
+
+.info-row {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    font-size: 14px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    color: #667085;
+}
+
+.value {
+    color: #172033;
+
+    font-weight: 600;
+}
+
+.pending {
+    color: #b54708;
+
+    background: #fff4e5;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+}
+
+/* MESSAGE */
+
+.message {
+    color: #667085;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    margin-bottom: 28px;
+}
+
+/* BUTTON */
+
+.button {
+    display: inline-block;
+
+    background: #087f63;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    padding: 12px 24px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.button:hover {
+    background: #066b54;
+}
+
+/* BACK */
+
+.back {
+    margin-top: 20px;
+
+    font-size: 12px;
+}
+
+.back a {
+    color: #667085;
+
+    text-decoration: none;
+}
+
+.back a:hover {
+    color: #087f63;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="success-icon">
+        ✓
+    </div>
+
+    <h1>
+        Registration Submitted
+    </h1>
+
+    <div class="subtitle">
+        Your employee registration has been submitted successfully.
+        An administrator will review your details and selfie before
+        approving your registration.
+    </div>
+
+    <div class="info-box">
+
+        <div class="info-row">
+
+            <span class="label">
+                Employee ID
+            </span>
+
+            <span class="value">
+                {{ employee_id }}
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <span class="label">
+                Name
+            </span>
+
+            <span class="value">
+                {{ name }}
+            </span>
+
+        </div>
+
+        <div class="info-row">
+
+            <span class="label">
+                Status
+            </span>
+
+            <span class="pending">
+                Pending
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="message">
+
+        Please wait for the administrator to approve your registration.
+        Once approved, you will be able to log in to the Employee Portal.
+
+    </div>
+
+    <a href="/employee/register" class="button">
+        Register Another Employee
+    </a>
+
+    <div class="back">
+
+        <a href="/">
+            ← Back to portal
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

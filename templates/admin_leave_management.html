@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FACETRACK | Leave Management</title>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f4f6fa;color:#172033;margin:0;padding:24px}
+        main{max-width:1200px;margin:auto}
+        h1{margin-top:0}
+        .card{background:white;border:1px solid #e2e7ef;border-radius:12px;padding:20px;margin:18px 0;overflow:auto}
+        form.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+        label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}
+        input,select,textarea{box-sizing:border-box;width:100%;padding:10px;border:1px solid #cbd3df;border-radius:7px}
+        button,.btn{border:0;border-radius:7px;padding:10px 14px;background:#126b57;color:white;cursor:pointer;text-decoration:none;display:inline-block}
+        button.secondary,.btn.secondary{background:#5b6473}
+        button.reject{background:#a52834}
+        table{border-collapse:collapse;width:100%;min-width:850px}
+        th,td{text-align:left;padding:10px;border-bottom:1px solid #e6e9ef;font-size:14px}
+        th{background:#f8fafc}
+        .status{font-weight:bold}
+        .Pending{color:#946200}.Approved{color:#087443}.Rejected,.Cancelled{color:#a52834}
+        .flash{padding:10px;border-radius:7px;background:#edf4ff;margin:8px 0}
+        .actions{display:flex;gap:6px;flex-wrap:wrap}
+        .actions form{display:inline}
+        .nav{display:flex;gap:12px;flex-wrap:wrap}
+        .leave-filters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+        .filter-btn{background:#e8edf5;color:#172033;border:1px solid #d5dce7}
+        .filter-btn.active{background:#126b57;color:white}
+        .count{display:inline-block;background:#fff;border:1px solid #d5dce7;border-radius:20px;padding:2px 7px;margin-left:5px;font-size:12px}
+        @media(max-width:600px){body{padding:12px}.card{padding:14px}}
+    </style>
+</head>
+<body>
+<main>
+    <h1>Leave Management</h1>
+    <p>Admin-only page: add approved leave or review employee requests.</p>
+
+    <div class="nav">
+        <a class="btn secondary" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+        <a class="btn secondary" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="card">
+        <h2>Add leave for an employee</h2>
+        <p>The leave entered here is approved immediately.</p>
+
+        <form class="grid" method="post" action="{{ url_for('admin_leave_management') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="add">
+
+            <div>
+                <label for="employee_id">Employee code</label>
+                <input id="employee_id" name="employee_id" required maxlength="50" placeholder="e.g. 101">
+            </div>
+            <div>
+                <label for="leave_type">Leave type</label>
+                <select id="leave_type" name="leave_type" required>
+                    {% for t in leave_types %}
+                        <option value="{{ t }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="start_date">From date</label>
+                <input id="start_date" type="date" name="start_date" required>
+            </div>
+            <div>
+                <label for="end_date">To date</label>
+                <input id="end_date" type="date" name="end_date" required>
+            </div>
+            <div style="grid-column:1/-1">
+                <label for="reason">Reason</label>
+                <textarea id="reason" name="reason" rows="2" maxlength="2000" placeholder="Reason (optional)"></textarea>
+            </div>
+            <div><button type="submit">Add and approve leave</button></div>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Leave records and requests</h2>
+
+        <div class="leave-filters" role="group" aria-label="Filter leave requests">
+            <button type="button" class="filter-btn active" data-filter="All">All <span class="count" id="count-All">0</span></button>
+            <button type="button" class="filter-btn" data-filter="Pending">Pending <span class="count" id="count-Pending">0</span></button>
+            <button type="button" class="filter-btn" data-filter="Approved">Approved <span class="count" id="count-Approved">0</span></button>
+            <button type="button" class="filter-btn" data-filter="Rejected">Rejected <span class="count" id="count-Rejected">0</span></button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th><th>Type</th><th>Dates</th>
+                    <th>Reason</th><th>Status</th><th>Admin actions</th>
+                </tr>
+            </thead>
+            <tbody id="leave-table-body">
+                {% for r in leave_records %}
+                <tr data-leave-status="{{ r.status }}">
+                    <td>{{ r.employee_id }}{% if r.employee_name %}<br>{{ r.employee_name }}{% endif %}</td>
+                    <td>{{ r.leave_type }}</td>
+                    <td>{{ r.start_date }} to {{ r.end_date }}</td>
+                    <td>{{ r.reason or '—' }}</td>
+                    <td class="status {{ r.status }}">{{ r.status }}</td>
+                    <td>
+                        <div class="actions">
+                        {% if r.status == 'Pending' %}
+                            <form method="post" action="{{ url_for('admin_leave_management') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="leave_id" value="{{ r.id }}">
+                                <button name="action" value="approve">Approve</button>
+                            </form>
+                            <form method="post" action="{{ url_for('admin_leave_management') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="leave_id" value="{{ r.id }}">
+                                <button class="reject" name="action" value="reject">Reject</button>
+                            </form>
+                        {% elif r.status == 'Approved' %}
+                            <form method="post" action="{{ url_for('admin_leave_management') }}" onsubmit="return confirm('Cancel this approved leave?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="leave_id" value="{{ r.id }}">
+                                <button class="secondary" name="action" value="cancel">Cancel leave</button>
+                            </form>
+                        {% else %}
+                            —
+                        {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr id="no-records"><td colspan="6">No leave records yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p id="filter-empty" hidden>No leave requests match this filter.</p>
+    </section>
+</main>
+
+<script>
+(function () {
+    const buttons = document.querySelectorAll(".filter-btn");
+    const rows = document.querySelectorAll("#leave-table-body tr[data-leave-status]");
+    const noRecords = document.getElementById("no-records");
+    const filterEmpty = document.getElementById("filter-empty");
+    const statuses = ["All", "Pending", "Approved", "Rejected"];
+
+    statuses.forEach(function (status) {
+        const count = status === "All"
+            ? rows.length
+            : Array.from(rows).filter(row => row.dataset.leaveStatus === status).length;
+        document.getElementById("count-" + status).textContent = count;
+    });
+
+    buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const selected = button.dataset.filter;
+            buttons.forEach(btn => btn.classList.toggle("active", btn === button));
+
+            let visible = 0;
+            rows.forEach(function (row) {
+                const show = selected === "All" || row.dataset.leaveStatus === selected;
+                row.hidden = !show;
+                if (show) visible++;
+            });
+
+            if (noRecords) noRecords.hidden = true;
+            filterEmpty.hidden = visible !== 0 || rows.length === 0;
+        });
+    });
+})();
+</script>
+</body>
+</html>

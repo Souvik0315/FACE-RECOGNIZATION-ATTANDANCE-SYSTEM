@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack | My Profile</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f6f7f9;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e4e7eb;
+            padding: 25px 18px;
+            position: fixed;
+            inset: 0 auto 0 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            padding: 0 12px;
+            margin-bottom: 35px;
+        }
+
+        .logo span {
+            color: #087f63;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #98a2b3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            margin-bottom: 10px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #667085;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #eaf6f2;
+            color: #087f63;
+        }
+
+        .menu a.active {
+            font-weight: 600;
+        }
+
+        .menu .logout {
+            margin-top: 25px;
+            color: #a52a2a;
+        }
+
+        .main {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 35px;
+        }
+
+        .heading {
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .profile-card {
+            max-width: 850px;
+            background: white;
+            border: 1px solid #e4e7eb;
+            border-radius: 14px;
+            padding: 30px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #edf0f2;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #eaf6f2;
+            color: #087f63;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .profile-header h2 {
+            font-size: 23px;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail {
+            padding: 16px;
+            background: #f8fafb;
+            border: 1px solid #edf0f2;
+            border-radius: 9px;
+            min-width: 0;
+        }
+
+        .detail span {
+            display: block;
+            color: #667085;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .detail strong {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .note {
+            margin-top: 24px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #f0f7f5;
+            color: #276653;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 650px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 16px;
+                border-right: none;
+                border-bottom: 1px solid #e4e7eb;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .menu {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .menu a {
+                white-space: nowrap;
+            }
+
+            .menu .logout {
+                margin-top: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .profile-card {
+                padding: 20px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .heading h1 {
+                font-size: 24px;
+            }
+
+            .profile-header h2 {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">Face<span>Track</span></div>
+
+        <div class="menu-title">Employee Portal</div>
+
+        <nav class="menu">
+            <a href="{{ url_for('employee_dashboard') }}">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for('employee_recognition') }}">
+                📷 Mark Attendance
+            </a>
+
+            <a href="{{ url_for('employee_attendance_calendar') }}">
+                📅 Attendance Calendar
+            </a>
+
+            <a href="{{ url_for('employee_profile') }}" class="active">
+                👤 My Profile
+            </a>
+
+            <a href="{{ url_for('employee_change_password') }}">
+                🔐 Change Password
+            </a>
+
+            <a href="{{ url_for('employee_logout') }}" class="logout">
+                🚪 Logout
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="heading">
+            <h1>My Profile</h1>
+            <p>View your personal and academic information.</p>
+        </div>
+
+        <section class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">
+                    {{ (employee.name or 'S')[:1].upper() }}
+                </div>
+
+                <div>
+                    <h2>{{ employee.name or 'Employee' }}</h2>
+                    <p>Employee ID: {{ employee.employee_id }}</p>
+                </div>
+            </div>
+
+            <h3 class="section-title">Personal Information</h3>
+
+            <div class="details">
+                <div class="detail">
+                    <span>Full Name</span>
+                    <strong>{{ employee.name or 'Not provided' }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Employee ID</span>
+                    <strong>{{ employee.employee_id or 'Not provided' }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Email Address</span>
+                    <strong>{{ employee.email or 'Not provided' }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Phone Number</span>
+                    <strong>{{ employee.phone or 'Not provided' }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Department / Department</span>
+                    <strong>{{ employee.department or 'Not provided' }}</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Designation</span>
+                    <strong>{{ employee.designation or 'Not provided' }}</strong>
+                </div>
+            </div>
+
+            <div class="note">
+                Your profile information is read from your employee account.
+                If any information is incorrect, contact your administrator.
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

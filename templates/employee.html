@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack | Employee Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --page: #f4f7fc;
+            --surface: #ffffff;
+            --border: #e1e8f2;
+            --text: #14264a;
+            --muted: #74819a;
+            --blue: #245cff;
+            --blue-dark: #1747d4;
+            --blue-soft: #edf3ff;
+            --cyan: #42c8f5;
+            --green: #078568;
+            --green-soft: #e8f8f1;
+            --danger: #b42332;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            background: var(--page);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 238px;
+            flex: 0 0 238px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 0 13px;
+        }
+
+        .logo {
+            height: 78px;
+            display: flex;
+            align-items: center;
+            padding: 0 9px;
+            font-size: 21px;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border);
+            letter-spacing: -.5px;
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 10px;
+            margin: -22px 0 22px 50px;
+        }
+
+        .menu-title {
+            color: #98a4b8;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .9px;
+            margin: 22px 10px 9px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            color: #465574;
+            padding: 12px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 13px;
+            transition: .2s ease;
+        }
+
+        .nav:hover {
+            background: #f3f6ff;
+            color: var(--blue);
+        }
+
+        .nav.active {
+            background: var(--blue-soft);
+            color: var(--blue);
+            border: 1px solid #d9e4ff;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+        }
+
+        .logout {
+            color: var(--danger);
+        }
+
+        /* MAIN AREA */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 0 30px 36px;
+        }
+
+        .topbar {
+            min-height: 82px;
+            margin: 0 -30px 28px;
+            padding: 16px 30px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .topbar h1 {
+            font-size: 23px;
+            letter-spacing: -.5px;
+        }
+
+        .description {
+            color: var(--muted);
+            margin-top: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .admin {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: #4b5b78;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .page-heading {
+            margin-bottom: 20px;
+        }
+
+        .page-heading h2 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* FORM CARD */
+
+        .form-card,
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(30, 62, 120, .045);
+        }
+
+        .form-card {
+            padding: 25px;
+            margin-bottom: 23px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            font-size: 17px;
+            color: var(--text);
+        }
+
+        .section-heading p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .section-tag {
+            padding: 7px 10px;
+            border-radius: 7px;
+            color: var(--blue);
+            background: var(--blue-soft);
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #43516d;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-width: 0;
+            padding: 12px 13px;
+            border: 1px solid #d8e1ee;
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text);
+            outline: none;
+            font-size: 12px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(36, 92, 255, .09);
+        }
+
+        input::placeholder {
+            color: #9aa7bc;
+        }
+
+        /* CAMERA */
+
+        .camera-wrapper {
+            width: 100%;
+        }
+
+        .camera-preview {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            height: 350px;
+            border: 1px solid #d7e2f1;
+            border-radius: 12px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at center, #e7f0ff, #f4f7fc 75%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-preview video,
+        .camera-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #cameraPlaceholder {
+            position: absolute;
+            color: #8796b0;
+            font-size: 13px;
+            pointer-events: none;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 9px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .camera-btn,
+        .submit-btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: .2s ease;
+        }
+
+        .camera-btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .start-camera {
+            background: #edf2ff;
+            color: var(--blue);
+        }
+
+        .start-camera:hover {
+            background: #dfe8ff;
+        }
+
+        .capture-camera {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .capture-camera:hover {
+            background: var(--blue-dark);
+        }
+
+        .retake-camera {
+            background: #f2f5fa;
+            color: #43516d;
+            border: 1px solid var(--border);
+        }
+
+        .camera-status {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .camera-status.success {
+            color: var(--green);
+        }
+
+        .camera-status.error {
+            color: var(--danger);
+        }
+
+        .submit-btn {
+            margin-top: 22px;
+            background: linear-gradient(110deg, var(--blue), #3b9df5);
+            color: #fff;
+            box-shadow: 0 5px 13px rgba(36, 92, 255, .16);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(36, 92, 255, .23);
+        }
+
+        /* EMPLOYEE TABLE */
+
+        .table-card {
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-heading h2 {
+            font-size: 17px;
+        }
+
+        .table-heading p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .table-tools {
+            display: flex;
+            gap: 11px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .employee-search {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .department-filter {
+            width: 205px;
+            cursor: pointer;
+        }
+
+        .employee-count {
+            padding: 13px 22px;
+            color: #75829a;
+            font-size: 11px;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 690px;
+            border-collapse: collapse;
+        }
+
+        th {
+            color: #8290a8;
+            background: #f8faff;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .55px;
+            text-align: left;
+            padding: 15px 17px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            color: #40506d;
+            font-size: 12px;
+            padding: 16px 17px;
+            border-bottom: 1px solid #edf1f7;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background .15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f7f9ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .employee-id {
+            color: var(--blue);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .employee-name {
+            color: #17284b;
+            font-weight: 700;
+        }
+
+        .employee-department {
+            color: #697893;
+        }
+
+        .face-ok,
+        .face-none {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .face-ok {
+            color: #087f63;
+            background: #e7f8ef;
+        }
+
+        .face-none {
+            color: #956600;
+            background: #fff5dc;
+        }
+
+        .delete {
+            display: inline-block;
+            color: var(--danger);
+            background: #fff0f1;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 11px;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+
+        .delete:hover {
+            background: #ffe0e4;
+        }
+
+        .empty {
+            padding: 42px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1050px) {
+            .sidebar {
+                width: 205px;
+                flex-basis: 205px;
+            }
+
+            .main {
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+
+            .topbar {
+                margin-left: -22px;
+                margin-right: -22px;
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 0 14px 10px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .logo {
+                height: 65px;
+            }
+
+            .subtitle {
+                margin-bottom: 10px;
+            }
+
+            .menu-title {
+                margin-top: 10px;
+            }
+
+            .nav {
+                display: inline-flex;
+                padding: 9px 11px;
+            }
+
+            .main {
+                padding: 0 18px 28px;
+            }
+
+            .topbar {
+                margin: 0 -18px 22px;
+                padding: 17px 18px;
+                min-height: 75px;
+            }
+
+            .camera-preview {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .form-card {
+                padding: 17px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+            }
+
+            .section-tag {
+                display: none;
+            }
+
+            .topbar h1 {
+                font-size: 20px;
+            }
+
+            .admin {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .table-header {
+                padding: 17px;
+            }
+
+            .employee-search,
+            .department-filter {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .camera-preview {
+                height: 240px;
+            }
+
+            .camera-btn,
+            .submit-btn {
+                padding: 11px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">Face<span>Track</span></div>
+        <div class="subtitle">Attendance Management</div>
+
+        <div class="menu-title">Main</div>
+
+        <a href="/dashboard" class="nav">
+            <span class="nav-icon">⌂</span> Dashboard
+        </a>
+
+        <a href="/employees" class="nav active">
+            <span class="nav-icon">♙</span> Employees
+        </a>
+
+        <a href="/recognition" class="nav">
+            <span class="nav-icon">◎</span> Face Recognition
+        </a>
+
+        <a href="/attendance" class="nav">
+            <span class="nav-icon">✓</span> Attendance
+        </a>
+
+        <a href="/reports" class="nav">
+            <span class="nav-icon">▤</span> Reports
+        </a>
+
+        <div class="menu-title">Administration</div>
+
+        <a href="{{ url_for('registration_requests') }}" class="nav">
+            <span class="nav-icon">✎</span> Registration Requests
+        </a>
+
+        <div class="menu-title">Account</div>
+
+        <a href="/logout" class="nav logout">
+            <span class="nav-icon">↪</span> Logout
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="topbar">
+            <div>
+                <h1>Employees</h1>
+                <p class="description">
+                    Register employees and manage their face recognition data.
+                </p>
+            </div>
+
+            <div class="admin">Administrator</div>
+        </div>
+
+        <div class="page-heading">
+            <h2>Employee Management</h2>
+            <p>Manage employee records, register face photos and review face registration status.</p>
+        </div>
+
+        <!-- ADD EMPLOYEE FORM -->
+        <section class="form-card">
+            <div class="section-heading">
+                <div>
+                    <h2>Register New Employee</h2>
+                    <p>Enter employee details and capture a clear face photo.</p>
+                </div>
+                <span class="section-tag">NEW EMPLOYEE</span>
+            </div>
+
+            <form
+                action="/employees/add"
+                method="POST"
+                enctype="multipart/form-data"
+                id="employeeForm"
+            >
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="employee_id">Employee ID *</label>
+                        <input
+                            type="text"
+                            id="employee_id"
+                            name="employee_id"
+                            placeholder="Example: EMP001"
+                            autocomplete="off"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="name">Full Name *</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter employee name"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="employee@example.com"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="phone">Phone</label>
+                        <input
+                            type="text"
+                            id="phone"
+                            name="phone"
+                            placeholder="Enter phone number"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="department">Department</label>
+                        <input
+                            type="text"
+                            id="department"
+                            name="department"
+                            placeholder="Example: IT"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="designation">Designation</label>
+                        <input
+                            type="text"
+                            id="designation"
+                            name="designation"
+                            placeholder="Example: Software Engineer"
+                        >
+                    </div>
+
+                    <!-- LIVE CAMERA -->
+                    <div class="field full">
+                        <label>Employee Face Photo *</label>
+
+                        <div class="camera-wrapper">
+                            <div class="camera-preview">
+                                <video id="camera" autoplay playsinline muted></video>
+
+                                <img
+                                    id="capturedImage"
+                                    alt="Captured employee face"
+                                    style="display:none;"
+                                >
+
+                                <div id="cameraPlaceholder">
+                                    Camera preview<br>
+                                    Start the camera to capture an employee photo.
+                                </div>
+                            </div>
+
+                            <div class="camera-controls">
+                                <button
+                                    type="button"
+                                    class="camera-btn start-camera"
+                                    id="startCamera"
+                                >
+                                    🎥 Start Camera
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="camera-btn capture-camera"
+                                    id="capturePhoto"
+                                    disabled
+                                >
+                                    📸 Capture Photo
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="camera-btn retake-camera"
+                                    id="retakePhoto"
+                                    style="display:none;"
+                                >
+                                    ↻ Retake
+                                </button>
+                            </div>
+
+                            <p id="cameraStatus" class="camera-status">
+                                Click Start Camera and allow camera access.
+                            </p>
+
+                            <!-- Flask continues receiving request.files["photo"] -->
+                            <input
+                                type="file"
+                                name="photo"
+                                id="photo"
+                                accept=".jpg,.jpeg,.png"
+                                required
+                                style="display:none;"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Register Employee →
+                </button>
+            </form>
+        </section>
+
+        <!-- EMPLOYEE TABLE -->
+        <section class="table-card">
+            <div class="table-header">
+                <div class="table-heading">
+                    <h2>Registered Employees</h2>
+                    <p>Search employee records or filter by department.</p>
+                </div>
+
+                <div class="table-tools">
+                    <input
+                        type="search"
+                        id="employeeSearch"
+                        class="employee-search"
+                        placeholder="Search ID, name, department or designation..."
+                        aria-label="Search employees"
+                    >
+
+                    <select
+                        id="departmentFilter"
+                        class="department-filter"
+                        aria-label="Filter employees by department"
+                    >
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="employee-count" id="employeeCount" aria-live="polite">
+                Loading employee records...
+            </div>
+
+            {% if employees %}
+            <div class="table-scroll">
+                <table id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Face Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td class="employee-id">
+                                {{ employee.employee_id }}
+                            </td>
+
+                            <td class="employee-name">
+                                {{ employee.name }}
+                            </td>
+
+                            <td class="employee-department">
+                                {{ employee.department or '-' }}
+                            </td>
+
+                            <td>
+                                {{ employee.designation or '-' }}
+                            </td>
+
+                            <td>
+                                {% if employee.face_encoding %}
+                                <span class="face-ok">✓ Registered</span>
+                                {% else %}
+                                <span class="face-none">Not Registered</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <a
+                                    class="delete"
+                                    href="/employees/delete/{{ employee.id }}"
+                                    onclick="return confirm('Delete this employee? This action may be irreversible.');"
+                                >
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty">
+                <strong>No employees registered yet.</strong><br>
+                Register an employee using the form above.
+            </div>
+            {% endif %}
+        </section>
+    </main>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    /* ==========================================
+       WEBCAM CAPTURE
+       Keeps the captured image in request.files["photo"]
+       ========================================== */
+
+    const video = document.getElementById("camera");
+    const canvas = document.createElement("canvas");
+    const capturedImage = document.getElementById("capturedImage");
+    const photoInput = document.getElementById("photo");
+    const placeholder = document.getElementById("cameraPlaceholder");
+
+    const startButton = document.getElementById("startCamera");
+    const captureButton = document.getElementById("capturePhoto");
+    const retakeButton = document.getElementById("retakePhoto");
+    const cameraStatus = document.getElementById("cameraStatus");
+    const employeeForm = document.getElementById("employeeForm");
+
+    let cameraStream = null;
+
+    function setStatus(message, type = "") {
+        cameraStatus.textContent = message;
+        cameraStatus.className =
+            "camera-status" + (type ? " " + type : "");
+    }
+
+    startButton.addEventListener("click", async function () {
+        try {
+            if (!navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia) {
+                throw new Error("Camera API is not available.");
+            }
+
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            }
+
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: "user"
+                },
+                audio: false
+            });
+
+            video.srcObject = cameraStream;
+            video.style.display = "block";
+            capturedImage.style.display = "none";
+            placeholder.style.display = "none";
+
+            captureButton.disabled = false;
+            captureButton.style.display = "inline-block";
+            retakeButton.style.display = "none";
+            startButton.textContent = "🎥 Camera Active";
+
+            setStatus(
+                "Camera is active. Look directly at the camera and click Capture Photo."
+            );
+        } catch (error) {
+            console.error("Camera error:", error);
+
+            setStatus(
+                "Camera access failed. Allow camera permission and try again.",
+                "error"
+            );
+        }
+    });
+
+    captureButton.addEventListener("click", function () {
+        if (!cameraStream) {
+            setStatus("Please start the camera first.", "error");
+            return;
+        }
+
+        if (!video.videoWidth || !video.videoHeight) {
+            setStatus(
+                "The camera is not ready yet. Please wait a moment.",
+                "error"
+            );
+            return;
+        }
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(function (blob) {
+            if (!blob) {
+                setStatus("Could not capture the photo.", "error");
+                return;
+            }
+
+            const file = new File(
+                [blob],
+                "camera_capture.jpg",
+                { type: "image/jpeg" }
+            );
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            photoInput.files = dataTransfer.files;
+
+            capturedImage.src = URL.createObjectURL(blob);
+            capturedImage.style.display = "block";
+            video.style.display = "none";
+
+            captureButton.style.display = "none";
+            retakeButton.style.display = "inline-block";
+
+            setStatus(
+                "Photo captured successfully. Click Register Employee to continue.",
+                "success"
+            );
+        }, "image/jpeg", 0.92);
+    });
+
+    retakeButton.addEventListener("click", function () {
+        photoInput.value = "";
+        capturedImage.style.display = "none";
+        video.style.display = "block";
+
+        captureButton.style.display = "inline-block";
+        captureButton.disabled = false;
+        retakeButton.style.display = "none";
+
+        setStatus("Camera is active. Capture a new photo.");
+    });
+
+    employeeForm.addEventListener("submit", function (event) {
+        if (!photoInput.files || photoInput.files.length === 0) {
+            event.preventDefault();
+
+            setStatus(
+                "Please start the camera and capture a photo before registering.",
+                "error"
+            );
+
+            alert(
+                "Please start the camera and capture a photo before registering the employee."
+            );
+        }
+    });
+
+    window.addEventListener("beforeunload", function () {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(function (track) {
+                track.stop();
+            });
+        }
+    });
+
+    /* ==========================================
+       EMPLOYEE SEARCH AND DEPARTMENT FILTER
+       Works with the rows already rendered by Flask.
+       No new backend route or database change.
+       ========================================== */
+
+    const searchInput = document.getElementById("employeeSearch");
+    const departmentFilter = document.getElementById("departmentFilter");
+    const table = document.getElementById("employeeTable");
+    const countLabel = document.getElementById("employeeCount");
+
+    if (!searchInput || !departmentFilter || !table || !countLabel) {
+        return;
+    }
+
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Build department options from existing employee records.
+    const departments = new Set();
+
+    rows.forEach(function (row) {
+        if (!row.cells[0]) return;
+
+        const departmentCell = row.cells[2];
+
+        if (departmentCell) {
+            const department = departmentCell.textContent.trim();
+
+            if (department && department !== "-") {
+                departments.add(department);
+            }
+        }
+    });
+
+    Array.from(departments)
+        .sort(function (a, b) {
+            return a.localeCompare(b);
+        })
+        .forEach(function (department) {
+            const option = document.createElement("option");
+            option.value = department;
+            option.textContent = department;
+            departmentFilter.appendChild(option);
+        });
+
+    function filterEmployees() {
+        const query = searchInput.value.trim().toLowerCase();
+        const selectedDepartment =
+            departmentFilter.value.trim().toLowerCase();
+
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+            const rowText = row.textContent.toLowerCase();
+
+            const departmentCell = row.cells[2];
+            const department = departmentCell
+                ? departmentCell.textContent.trim().toLowerCase()
+                : "";
+
+            const matchesSearch = rowText.includes(query);
+
+            const matchesDepartment =
+                !selectedDepartment ||
+                department === selectedDepartment;
+
+            const visible = matchesSearch && matchesDepartment;
+
+            row.hidden = !visible;
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        countLabel.textContent =
+            "Showing " + visibleCount + " of " + rows.length + " employees";
+
+        let emptyRow = tbody.querySelector(".filter-empty-row");
+
+        if (visibleCount === 0 && rows.length > 0) {
+            if (!emptyRow) {
+                emptyRow = document.createElement("tr");
+                emptyRow.className = "filter-empty-row";
+
+                const cell = document.createElement("td");
+                cell.colSpan = table.querySelectorAll("thead th").length;
+                cell.className = "empty";
+                cell.textContent =
+                    "No employees match your search or department filter.";
+
+                emptyRow.appendChild(cell);
+                tbody.appendChild(emptyRow);
+            }
+        } else if (emptyRow) {
+            emptyRow.remove();
+        }
+    }
+
+    searchInput.addEventListener("input", filterEmployees);
+    departmentFilter.addEventListener("change", filterEmployees);
+
+    filterEmployees();
+});
+</script>
+</body>
+</html>

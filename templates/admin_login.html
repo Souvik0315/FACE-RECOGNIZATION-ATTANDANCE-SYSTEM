@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack | Admin Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            color: #10234d;
+            background:
+                radial-gradient(ellipse at 28% 40%, rgba(38,100,255,.48), transparent 43%),
+                radial-gradient(ellipse at 78% 12%, rgba(104,224,255,.4), transparent 38%),
+                linear-gradient(125deg, #eaf1ff, #a6c0f2 48%, #eaf5ff);
+        }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(0,1.15fr) minmax(380px,.85fr);
+            align-items: center;
+            gap: 4vw;
+            padding: 38px 6vw;
+            overflow: hidden;
+        }
+
+        .brand-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: fit-content;
+            animation: brandSlide 1.4s ease-out both;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            color: #1558ff;
+            flex-shrink: 0;
+        }
+
+        .logo-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .brand-copy {
+            animation: wordSlide 1.8s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .brand-name {
+            color: #071b49;
+            font-size: clamp(30px,4vw,54px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+
+        .brand-name span,
+        h1 span {
+            color: #1558ff;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: #263e6b;
+            font-size: clamp(12px,1.2vw,16px);
+        }
+
+        @keyframes brandSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes wordSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .rule {
+            width: 110px;
+            height: 4px;
+            margin: 28px 0 30px;
+            border-radius: 10px;
+            background: linear-gradient(90deg,#1558ff,#62dfff,transparent);
+        }
+
+        .holo-stage {
+            position: relative;
+            width: min(100%,550px);
+            height: 340px;
+            display: grid;
+            place-items: center;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 85%;
+            height: 34%;
+            border: 2px solid rgba(98,223,255,.9);
+            border-left-color: transparent;
+            border-radius: 50%;
+            box-shadow: 0 0 16px rgba(49,190,255,.4);
+            animation: orbit 8s linear infinite;
+        }
+
+        .orbit.two {
+            width: 72%;
+            height: 47%;
+            border-color: rgba(255,255,255,.75);
+            border-top-color: #55dcff;
+            animation-direction: reverse;
+            animation-duration: 11s;
+        }
+
+        @keyframes orbit {
+            to {
+                rotate: 360deg;
+            }
+        }
+
+        .face {
+            width: 210px;
+            height: 255px;
+            position: relative;
+            color: white;
+            filter: drop-shadow(0 0 13px rgba(48,207,255,.8));
+            animation: floatFace 4s ease-in-out infinite;
+        }
+
+        .face svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes floatFace {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .corner {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            border-color: #74edff;
+            border-style: solid;
+            filter: drop-shadow(0 0 7px #42cfff);
+            animation: glow 2s infinite alternate;
+        }
+
+        .tl {
+            top: 0;
+            left: 0;
+            border-width: 4px 0 0 4px;
+        }
+
+        .tr {
+            top: 0;
+            right: 0;
+            border-width: 4px 4px 0 0;
+        }
+
+        .bl {
+            bottom: 0;
+            left: 0;
+            border-width: 0 0 4px 4px;
+        }
+
+        .br {
+            bottom: 0;
+            right: 0;
+            border-width: 0 4px 4px 0;
+        }
+
+        @keyframes glow {
+            from {
+                opacity: .55;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .scan {
+            position: absolute;
+            left: 5%;
+            width: 90%;
+            height: 3px;
+            background: #8df5ff;
+            box-shadow: 0 0 12px #43dfff, 0 0 24px #43dfff;
+            animation: scan 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes scan {
+            from {
+                top: 12%;
+            }
+            to {
+                top: 86%;
+            }
+        }
+
+        .status {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border: 1px solid rgba(255,255,255,.5);
+            border-radius: 12px;
+            background: rgba(28,83,175,.38);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            background: #60ffe0;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #60ffe0;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .35;
+            }
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 510px;
+            justify-self: end;
+            padding: clamp(26px,3.2vw,45px);
+            border: 1px solid rgba(255,255,255,.92);
+            border-radius: 27px;
+            background: linear-gradient(145deg,rgba(255,255,255,.88),rgba(255,255,255,.67));
+            box-shadow: 0 25px 70px rgba(31,69,143,.18);
+            backdrop-filter: blur(22px);
+            animation: panelEnter 1s .15s ease-out both;
+        }
+
+        @keyframes panelEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(25px,2.4vw,34px);
+            color: #071b49;
+            margin-bottom: 13px;
+            letter-spacing: -.8px;
+        }
+
+        .heading-line {
+            width: 56px;
+            height: 5px;
+            border-radius: 10px;
+            margin: 0 auto 28px;
+            background: linear-gradient(90deg,#1558ff,#62dfff);
+        }
+
+        .error {
+            background: #fff1f1;
+            border: 1px solid #ffc9c9;
+            color: #a51d2d;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: #31456d;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            height: 54px;
+            padding: 0 15px;
+            border: 1px solid rgba(74,112,180,.25);
+            border-radius: 13px;
+            outline: none;
+            background: rgba(255,255,255,.78);
+            color: #071b49;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: #397dff;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(21,88,255,.1);
+        }
+
+        input::placeholder {
+            color: #8292b2;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 58px;
+            border: 0;
+            border-radius: 15px;
+            color: white;
+            background: linear-gradient(100deg,#174aff,#2e78ff 60%,#42b8f7);
+            box-shadow: 0 10px 24px rgba(21,88,255,.24);
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(21,88,255,.32);
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            color: #52678e;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .back:hover {
+            color: #1558ff;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #8190ad;
+            font-size: 11px;
+        }
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 28px 18px;
+            }
+
+            .brand-area {
+                align-items: center;
+                text-align: center;
+            }
+
+            .brand {
+                gap: 12px;
+            }
+
+            .logo-icon {
+                width: 55px;
+                height: 55px;
+            }
+
+            .rule {
+                margin: 20px 0 0;
+            }
+
+            .holo-stage {
+                height: 245px;
+                max-width: 430px;
+                margin: auto;
+            }
+
+            .face {
+                width: 155px;
+                height: 195px;
+            }
+
+            .login-box {
+                justify-self: center;
+                max-width: 500px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-name {
+                font-size: 29px;
+                letter-spacing: -1px;
+            }
+
+            .subtitle {
+                font-size: 11px;
+            }
+
+            .holo-stage {
+                height: 215px;
+            }
+
+            .login-box {
+                padding: 25px 20px;
+                border-radius: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="page">
+
+    <section class="brand-area">
+        <div class="brand">
+            <div class="logo-icon" aria-hidden="true">
+                <svg viewBox="0 0 100 100" fill="none">
+                    <path d="M36 9H15Q9 9 9 16V37 M64 9H85Q91 9 91 16V37 M9 63V84Q9 91 16 91H37 M91 63V84Q91 91 84 91H63"
+                          stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                    <g stroke="currentColor" stroke-width="1.5">
+                        <path d="M50 19C33 19 26 34 28 51L31 66L42 79L50 84L58 79L69 66L72 51C74 34 67 19 50 19Z"/>
+                        <path d="M28 43L42 30L50 19L59 31L72 43M29 52L43 45L50 54L58 45L71 52M32 65L44 61L50 70L57 61L68 65M42 30L43 45L44 61L42 78M59 31L58 45L57 61L58 78M50 19V84"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="brand-copy">
+                <div class="brand-name">FACE<span>TRACK</span></div>
+                <div class="subtitle">Face Recognition Attendance System</div>
+            </div>
+        </div>
+
+        <div class="rule"></div>
+
+        <div class="holo-stage">
+            <div class="orbit"></div>
+            <div class="orbit two"></div>
+
+            <div class="face">
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+
+                <svg viewBox="0 0 230 270" fill="none" aria-hidden="true">
+                    <g stroke="rgba(255,255,255,.95)" stroke-width="1.6">
+                        <path d="M115 18C79 18 58 43 57 80L54 121C53 154 70 180 91 198L115 214L139 198C160 180 177 154 176 121L173 80C172 43 151 18 115 18Z"/>
+                        <path d="M57 80L88 53L115 18L143 53L173 80M54 121L83 102L115 117L147 102L176 121M63 155L94 145L115 162L136 145L167 155M91 198L97 174L115 162L133 174L139 198"/>
+                        <path d="M88 53L83 102L94 145L97 174M143 53L147 102L136 145L133 174M115 18V214M57 80L115 117L173 80M54 121L115 162L176 121"/>
+                        <path d="M78 94L96 91M134 91L152 94M99 134L108 137L115 134L122 137L131 134M100 165Q115 176 130 165"
+                              stroke-width="2" stroke-linecap="round"/>
+                    </g>
+
+                    <g fill="#a4f6ff">
+                        <circle cx="115" cy="18" r="3"/>
+                        <circle cx="57" cy="80" r="3"/>
+                        <circle cx="173" cy="80" r="3"/>
+                        <circle cx="115" cy="117" r="3"/>
+                        <circle cx="54" cy="121" r="3"/>
+                        <circle cx="176" cy="121" r="3"/>
+                        <circle cx="115" cy="162" r="3"/>
+                    </g>
+                </svg>
+
+                <div class="scan"></div>
+            </div>
+
+            <div class="status">
+                <span class="dot"></span>
+                Admin biometric console
+            </div>
+        </div>
+    </section>
+
+    <section class="login-box">
+        <h1>Login to <span>FACETRACK</span></h1>
+        <div class="heading-line"></div>
+
+        {% if error %}
+        <div class="error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login_process') }}">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ session.get('_csrf_token', '') }}"
+            >
+
+            <div class="form-group">
+                <label for="email">Admin Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter admin email"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="login-button">
+                Admin Login →
+            </button>
+        </form>
+
+        <a href="{{ url_for('login') }}" class="back">
+            ← Back to Portal Selection
+        </a>
+
+        <div class="footer">
+            FaceTrack · Face Recognition Attendance System
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

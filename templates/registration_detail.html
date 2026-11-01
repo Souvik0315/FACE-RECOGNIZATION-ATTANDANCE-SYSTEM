@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FACETRACK | Registration Details</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+        }
+
+        main {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #667085;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e0e6ef;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 14px rgba(20, 35, 60, 0.04);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            font-size: 20px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(220px, 1fr)
+            );
+            gap: 14px;
+        }
+
+        .detail {
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px solid #edf0f5;
+            border-radius: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #667085;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .detail span {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: #fff4d6;
+            color: #8a5a00;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .photo-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .photo-frame {
+            width: 100%;
+            max-width: 340px;
+            min-height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e0e6ef;
+            border-radius: 12px;
+        }
+
+        .photo-frame img {
+            display: block;
+            max-width: 100%;
+            max-height: 420px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .photo-info {
+            flex: 1;
+            min-width: 220px;
+            color: #667085;
+            line-height: 1.7;
+        }
+
+        .notice {
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            border-radius: 9px;
+            background: #edf4ff;
+            color: #174ea6;
+            overflow-wrap: anywhere;
+        }
+
+        .notice.success {
+            background: #e8f7ee;
+            color: #176b3a;
+        }
+
+        .notice.error {
+            background: #fff0f0;
+            color: #b42332;
+        }
+
+        .notice.warning {
+            background: #fff7e6;
+            color: #8a5a00;
+        }
+
+        .button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: white;
+            background: #526078;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .button:hover {
+            opacity: 0.88;
+        }
+
+        .approve {
+            background: #16804a;
+        }
+
+        .reject {
+            background: #c4323f;
+        }
+
+        .back {
+            background: #526078;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 110px;
+            padding: 12px;
+            border: 1px solid #cbd3df;
+            border-radius: 8px;
+            font: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: 2px solid #a8c7fa;
+            border-color: #4285f4;
+        }
+
+        .help-text {
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .empty-photo {
+            color: #667085;
+            text-align: center;
+            padding: 24px 12px;
+        }
+
+        .section-description {
+            margin-top: -8px;
+            margin-bottom: 18px;
+            color: #667085;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .photo-frame {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main>
+
+    <!-- Page heading -->
+    <header class="header">
+        <div>
+            <h1>Registration Details</h1>
+            <p class="subtitle">
+                Review the employee's information and submitted selfie.
+            </p>
+        </div>
+
+        <a class="button back"
+           href="{{ url_for('registration_requests') }}">
+            &larr; Back to Requests
+        </a>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="notice
+                {% if category in ['success'] %}success
+                {% elif category in ['error', 'danger'] %}error
+                {% elif category in ['warning'] %}warning
+                {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <!-- Employee information -->
+    <section class="card">
+        <h2>Employee Information</h2>
+
+        <div class="details">
+
+            <div class="detail">
+                <strong>Request ID</strong>
+                <span>{{ registration.id or "Not available" }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Employee Name</strong>
+                <span>{{ registration.name or "Not provided" }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Employee ID</strong>
+                <span>{{ registration.employee_id or "Not assigned" }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Email Address</strong>
+                <span>{{ registration.email or "Not provided" }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Phone Number</strong>
+                <span>{{ registration.phone or "Not provided" }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Registration Status</strong>
+                <span>
+                    {{ registration.status or "Pending" }}
+                </span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Submitted selfie -->
+    <section class="card">
+        <h2>Submitted Selfie</h2>
+
+        <p class="section-description">
+            Check the photo submitted with this employee registration.
+        </p>
+
+        {% if registration.selfie_path %}
+            {% set selfie_path_normalized =
+                registration.selfie_path|replace('\\', '/') %}
+            {% set selfie_filename =
+                selfie_path_normalized.split('/')[-1] %}
+
+            <div class="photo-layout">
+                <div class="photo-frame">
+                    <img
+                        id="registration-selfie"
+                        src="{{ url_for(
+                            'employee_face_file',
+                            filename=selfie_filename
+                        ) }}"
+                        alt="Submitted employee selfie"
+                        onerror="
+                            this.style.display='none';
+                            document.getElementById(
+                                'selfie-error'
+                            ).style.display='block';
+                        "
+                    >
+
+                    <div id="selfie-error"
+                         class="empty-photo"
+                         style="display:none;">
+                        <strong>Photo could not be loaded.</strong>
+                        <p>
+                            Check that the image exists in the
+                            employee_faces folder and that the
+                            Flask route can access it.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="photo-info">
+                    <strong>Photo verification</strong>
+                    <p>
+                        Confirm that the image is visible and belongs
+                        to the person requesting employee registration.
+                    </p>
+                    <p>
+                        If the photo does not appear, check the saved
+                        image path and the employee photo folder.
+                    </p>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="notice warning">
+                No selfie path is saved for this registration request.
+                The submitted image may be missing or may not have been
+                saved correctly.
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Approve and reject controls -->
+    {% if registration.status|string|lower == "pending" %}
+
+        <section class="card">
+            <h2>Approve Registration</h2>
+
+            <p class="section-description">
+                Approve only after reviewing the employee information
+                and submitted selfie.
+            </p>
+
+            <form
+                action="{{ url_for(
+                    'approve_registration',
+                    request_id=registration.id
+                ) }}"
+                method="POST"
+                onsubmit="return confirm(
+                    'Are you sure you want to approve this registration?'
+                );"
+            >
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ session.get('_csrf_token', '') }}"
+                >
+
+                <button type="submit" class="button approve">
+                    Approve Registration
+                </button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Reject Registration</h2>
+
+            <p class="section-description">
+                Enter a reason before rejecting this registration request.
+            </p>
+
+            <form
+                action="{{ url_for(
+                    'reject_registration',
+                    request_id=registration.id
+                ) }}"
+                method="POST"
+                onsubmit="return confirm(
+                    'Are you sure you want to reject this registration?'
+                );"
+            >
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ session.get('_csrf_token', '') }}"
+                >
+
+                <label for="rejection_reason">
+                    Reason for rejection <span>*</span>
+                </label>
+
+                <textarea
+                    id="rejection_reason"
+                    name="rejection_reason"
+                    maxlength="2000"
+                    required
+                    placeholder="Explain why this registration is being rejected..."
+                ></textarea>
+
+                <p class="help-text">
+                    A rejection reason is required by the registration
+                    rejection route.
+                </p>
+
+                <div class="actions">
+                    <button type="submit" class="button reject">
+                        Reject Registration
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    {% else %}
+
+        <section class="card">
+            <h2>Registration Already Processed</h2>
+
+            <p>
+                This request is currently marked as
+                <strong>
+                    {{ registration.status or "Unknown" }}
+                </strong>.
+            </p>
+
+            <p class="help-text">
+                Approval and rejection controls are hidden because
+                this request is not marked as Pending.
+            </p>
+        </section>
+
+    {% endif %}
+
+    <!-- Bottom navigation -->
+    <div class="actions" style="margin-bottom: 24px;">
+        <a class="button back"
+           href="{{ url_for('registration_requests') }}">
+            Back to Registration Requests
+        </a>
+    </div>
+
+</main>
+</body>
+</html>

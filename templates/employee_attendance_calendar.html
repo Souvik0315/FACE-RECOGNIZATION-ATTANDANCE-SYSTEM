@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack | Attendance Calendar</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f7f9;
+            color: #172033;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 230px;
+            background: white;
+            border-right: 1px solid #e4e7eb;
+            padding: 25px 18px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 12px 35px;
+        }
+
+        .logo span {
+            color: #087f63;
+        }
+
+        .menu-title {
+            color: #98a2b3;
+            font-size: 11px;
+            margin: 0 12px 12px;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu a {
+            padding: 12px;
+            text-decoration: none;
+            color: #667085;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #eaf6f2;
+            color: #087f63;
+        }
+
+        .menu .logout {
+            margin-top: 20px;
+            color: #b42318;
+        }
+
+        .main {
+            margin-left: 230px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .muted {
+            color: #667085;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .employee-info,
+        .card {
+            background: white;
+            border: 1px solid #e4e7eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .employee-info {
+            font-size: 13px;
+        }
+
+        .employee-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-label {
+            color: #667085;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            font-size: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 13px;
+            border: 1px solid #e4e7eb;
+            border-radius: 7px;
+            text-decoration: none;
+            color: #172033;
+            font-size: 13px;
+            background: white;
+        }
+
+        .btn:hover {
+            background: #eaf6f2;
+        }
+
+        .btn-primary {
+            background: #087f63;
+            border-color: #087f63;
+            color: white;
+        }
+
+        .weekdays,
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 7px;
+        }
+
+        .weekday {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            font-weight: bold;
+            color: #667085;
+        }
+
+        .day {
+            min-height: 85px;
+            padding: 9px;
+            border: 1px solid #e4e7eb;
+            border-radius: 8px;
+            background: white;
+            text-decoration: none;
+            color: #172033;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .day:hover {
+            border-color: #087f63;
+        }
+
+        .empty-day {
+            background: #f9fafb;
+            border-color: #f0f2f4;
+        }
+
+        .today {
+            outline: 2px solid #9ed9c8;
+        }
+
+        .present {
+            background: #effaf4;
+            border-color: #b8e5cb;
+        }
+
+        .other-record {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .weekly-holiday {
+            background: #f3edff;
+            border-color: #d9c9ff;
+        }
+
+        .public-holiday {
+            background: #eaf2ff;
+            border-color: #bfd5ff;
+        }
+
+        .absent {
+            background: #fff1f0;
+            border-color: #f5b8b4;
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .day-status {
+            font-size: 11px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .present .day-status {
+            color: #16834d;
+        }
+
+        .other-record .day-status {
+            color: #b45309;
+        }
+
+        .weekly-holiday .day-status {
+            color: #6941c6;
+        }
+
+        .public-holiday .day-status {
+            color: #245cc5;
+        }
+
+        .absent .day-status {
+            color: #b42318;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #667085;
+        }
+
+        .detail {
+            margin-top: 20px;
+        }
+
+        .detail h2 {
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 12px;
+            color: #667085;
+            margin-bottom: 7px;
+        }
+
+        .detail-item strong {
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            background: #eaf6f2;
+            color: #087f63;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .menu {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .menu a {
+                white-space: nowrap;
+            }
+
+            .menu .logout {
+                margin-top: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .weekdays,
+            .calendar-grid {
+                gap: 3px;
+            }
+
+            .weekday {
+                font-size: 10px;
+            }
+
+            .day {
+                min-height: 58px;
+                padding: 4px;
+            }
+
+            .day-number {
+                font-size: 11px;
+            }
+
+            .day-status {
+                font-size: 9px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">Face<span>Track</span></div>
+
+        <div class="menu-title">Employee Portal</div>
+
+        <nav class="menu">
+            <a href="{{ url_for('employee_dashboard') }}">
+                🏠 Dashboard
+            </a>
+
+            <a href="{{ url_for('employee_recognition') }}">
+                📷 Mark Attendance
+            </a>
+
+            <a
+                href="{{ url_for('employee_attendance_calendar') }}"
+                class="active"
+            >
+                📅 Attendance Calendar
+            </a>
+
+            <a
+                href="{{ url_for('employee_logout') }}"
+                class="logout"
+            >
+                🚪 Logout
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="header">
+            <div>
+                <h1>Attendance Calendar</h1>
+
+                <p class="muted">
+                    Welcome, {{ employee_name }}!
+                    View your monthly attendance.
+                </p>
+            </div>
+
+            <div class="employee-info">
+                <strong>{{ employee_name }}</strong>
+                Employee ID: {{ employee_id }}
+            </div>
+        </header>
+
+        <section class="stats">
+            <div class="card">
+                <div class="stat-label">Present Days</div>
+                <div class="stat-value">{{ total_present }}</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-label">Absent Days</div>
+                <div class="stat-value">{{ total_absent }}</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-label">Weekly Holidays</div>
+                <div class="stat-value">
+                    {{ total_weekly_holidays }}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="stat-label">Public Holidays</div>
+                <div class="stat-value">
+                    {{ total_public_holidays }}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="stat-label">Attendance Percentage</div>
+                <div class="stat-value">
+                    {{ attendance_percentage }}%
+                </div>
+            </div>
+        </section>
+
+        {% if upcoming_holiday_name is defined and upcoming_holiday_name %}
+            <div class="notice">
+                <strong>Upcoming holiday:</strong>
+                {{ upcoming_holiday_name }}
+
+                {% if upcoming_holiday_date is defined and upcoming_holiday_date %}
+                    — {{ upcoming_holiday_date }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <section class="card">
+            <div class="calendar-header">
+                <h2>{{ month_name }} {{ year }}</h2>
+
+                <div class="buttons">
+                    <a
+                        class="btn"
+                        href="{{ url_for(
+                            'employee_attendance_calendar',
+                            year=previous_year,
+                            month=previous_month
+                        ) }}"
+                    >
+                        ← Previous
+                    </a>
+
+                    <a
+                        class="btn btn-primary"
+                        href="{{ url_for('employee_attendance_calendar') }}"
+                    >
+                        This Month
+                    </a>
+
+                    <a
+                        class="btn"
+                        href="{{ url_for(
+                            'employee_attendance_calendar',
+                            year=next_year,
+                            month=next_month
+                        ) }}"
+                    >
+                        Next →
+                    </a>
+                </div>
+            </div>
+
+            <div class="weekdays">
+                {% for weekday in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+                    <div class="weekday">{{ weekday }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="calendar-grid">
+                {% for week in month_weeks %}
+                    {% for day in week %}
+                        {% if day == 0 %}
+                            <div class="day empty-day"></div>
+                        {% else %}
+                            {% set date_key = '%04d-%02d-%02d'|format(year, month, day) %}
+                            {% set record = attendance_by_date.get(date_key) %}
+                            {% set holiday_name = holiday_by_date.get(date_key) %}
+                            {% set weekly_off = date_key in weekly_off_dates %}
+                            {% set before_joining = joining_date and date_key < joining_date|string %}
+                            {% set day_class = 'day' %}
+
+                            {% if before_joining %}
+                                {% set day_class = day_class + ' empty-day' %}
+                            {% elif record and record.status == 'Present' %}
+                                {% set day_class = day_class + ' present' %}
+                            {% elif record %}
+                                {% set day_class = day_class + ' other-record' %}
+                            {% elif holiday_name %}
+                                {% set day_class = day_class + ' public-holiday' %}
+                            {% elif weekly_off %}
+                                {% set day_class = day_class + ' weekly-holiday' %}
+                            {% elif date_key < today_date %}
+                                {% set day_class = day_class + ' absent' %}
+                            {% endif %}
+
+                            {% if date_key == today_date %}
+                                {% set day_class = day_class + ' today' %}
+                            {% endif %}
+
+                            <a
+                                class="{{ day_class }}"
+                                href="{{ url_for(
+                                    'employee_attendance_calendar',
+                                    year=year,
+                                    month=month,
+                                    date=date_key
+                                ) }}"
+                            >
+                                <span class="day-number">
+                                    {{ day }}
+                                </span>
+                                
+                                {% if before_joining %}
+                                    <span class="day-status" style="color: #98a2b3;">
+                                        No Attendance Record
+                                    </span>
+                                {% elif record %}
+                                    <span class="day-status">
+                                        {{ record.status }}
+                                    </span>
+                                {% elif holiday_name %}
+                                    <span class="day-status">
+                                        {{ holiday_name }}
+                                    </span>
+                                {% elif weekly_off %}
+                                    <span class="day-status">
+                                        Weekly Holiday
+                                    </span>
+                                {% elif date_key < today_date %}
+                                    <span class="day-status">
+                                        Absent
+                                    </span>
+                                {% else %}
+                                    <span
+                                        class="day-status"
+                                        style="color: #98a2b3;"
+                                    >
+                                        —
+                                    </span>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <div class="legend">
+                <span>🟢 Present</span>
+                <span>🟠 Other attendance status</span>
+                <span>🔵 Public / National Holiday</span>
+                <span>🟣 Weekly Holiday</span>
+                <span>🔴 Absent (past working days)</span>
+                <span>🟩 Today</span>
+                <span>⚪ No attendance recorded (today/future)</span>
+            </div>
+        </section>
+
+        <section class="card detail">
+            <h2>
+                {% if selected_date %}
+                    Attendance Details — {{ selected_date }}
+                {% else %}
+                    Attendance Details
+                {% endif %}
+            </h2>
+
+            {% if selected_date and selected_record %}
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span>Date</span>
+                        <strong>
+                            {{ selected_record.attendance_date }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Time</span>
+                        <strong>
+                            {{ selected_record.attendance_time }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Status</span>
+                        <strong>
+                            {{ selected_record.status }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Method</span>
+                        <strong>
+                            {{ selected_record.method or 'Face Recognition' }}
+                        </strong>
+                    </div>
+                </div>
+
+                {% if selected_record.confidence is defined and selected_record.confidence is not none %}
+                    <p class="muted" style="margin-top: 15px;">
+                        Face match score:
+                        {{ '%.1f'|format(selected_record.confidence|float * 100) }}%
+                    </p>
+                {% endif %}
+
+            {% elif selected_date %}
+                {% set selected_key = selected_date|string %}
+                {% set selected_holiday = holiday_by_date.get(selected_key) %}
+                {% set selected_weekly_off = selected_key in weekly_off_dates %}
+
+                {% if selected_holiday %}
+                    <p class="muted">
+                        Holiday: {{ selected_holiday }}.
+                        No attendance record found for this date.
+                    </p>
+                {% elif selected_weekly_off %}
+                    <p class="muted">
+                        This is your scheduled weekly holiday.
+                    </p>
+                {% elif selected_date < today_date %}
+                    <p class="muted">
+                        Status: Absent. No attendance record was found
+                        for this past working day.
+                    </p>
+                {% else %}
+                    <p class="muted">
+                        No attendance record found for {{ selected_date }}.
+                    </p>
+                {% endif %}
+
+            {% else %}
+                <p class="muted">
+                    Click any date to view its attendance details.
+                </p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

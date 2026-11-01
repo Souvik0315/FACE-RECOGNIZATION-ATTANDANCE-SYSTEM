@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaceTrack | Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f6f8;
+    color:#172033;
+    min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{
+    position:fixed;
+    left:0;top:0;bottom:0;
+    width:238px;
+    background:#fff;
+    border-right:1px solid #e1e5e9;
+    display:flex;
+    flex-direction:column;
+}
+.brand{
+    height:78px;
+    padding:0 22px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #e1e5e9;
+}
+.brand-icon{
+    width:34px;height:34px;
+    border:1px solid #cfd6dc;
+    border-radius:7px;
+    display:grid;
+    place-items:center;
+    margin-right:10px;
+    color:#087f63;
+    font-size:16px;
+}
+.brand-name{font-size:19px;font-weight:700;color:#172033}
+.brand-name span{color:#087f63}
+.brand-sub{font-size:10px;color:#7b8490;margin-top:3px}
+
+.nav-area{padding:21px 13px}
+.nav-title{
+    color:#9aa2ac;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.9px;
+    padding:0 10px 8px;
+}
+.nav{
+    height:42px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:0 11px;
+    margin:3px 0;
+    border-radius:6px;
+    color:#344054;
+    font-size:13px;
+    border:1px solid transparent;
+}
+.nav:hover{background:#f7f8f9}
+.nav.active{
+    background:#edf6f2;
+    border-color:#d8ebe3;
+    color:#087f63;
+    font-weight:600;
+}
+.nav-icon{width:19px;text-align:center;font-size:13px}
+.nav-gap{height:20px}
+
+.sidebar-bottom{
+    margin-top:auto;
+    padding:14px;
+    border-top:1px solid #e1e5e9;
+}
+.admin-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px;
+    margin-bottom:8px;
+}
+.avatar{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:#eef0f2;
+    color:#374151;
+    display:grid;
+    place-items:center;
+    font-weight:700;
+    font-size:12px;
+}
+.admin-name{font-size:12px;font-weight:600}
+.admin-role{font-size:10px;color:#7b8490;margin-top:2px}
+.logout{color:#a52a2a}
+
+/* Main */
+.main{
+    margin-left:238px;
+    width:calc(100% - 238px);
+    min-width:0;
+}
+.topbar{
+    height:78px;
+    background:#fff;
+    border-bottom:1px solid #e1e5e9;
+    padding:0 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.page-title{font-size:22px;font-weight:700;color:#172033}
+.page-sub{font-size:12px;color:#667085;margin-top:4px}
+.top-right{display:flex;align-items:center;gap:16px}
+.date{font-size:12px;color:#667085}
+.top-admin{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding-left:16px;
+    border-left:1px solid #e1e5e9;
+}
+.top-admin strong{font-size:12px}
+.top-admin small{display:block;color:#7b8490;font-size:10px;margin-top:2px}
+
+.content{padding:28px 32px 40px}
+
+/* Stats */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: #fff;
+    border: 1px solid #dfe4e8;
+    border-radius: 10px;
+    padding: 18px;
+    min-width: 0;
+    min-height: 150px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+.stat:hover {
+    border-color: #cfd6dd;
+}
+
+.stat-label {
+    color: #475467;
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 500;
+    min-height: 19px;
+}
+
+.stat-number {
+    color: #172033;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.stat-note {
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+}
+
+.stat-line {
+    display: none;
+}
+
+/* Weekly attendance analytics */
+.weekly-panel {
+    background: #fff;
+    border: 1px solid #dfe4e8;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.weekly-body {
+    padding: 20px;
+}
+
+.weekly-row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.weekly-row:last-child {
+    margin-bottom: 0;
+}
+
+.weekly-day {
+    color: #667085;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.weekly-track {
+    height: 12px;
+    border-radius: 20px;
+    background: #edf2f8;
+    overflow: hidden;
+}
+
+.weekly-bar {
+    height: 100%;
+    min-width: 0;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #1558ff, #62dfff);
+    transition: width .5s ease;
+}
+
+.weekly-value {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 700;
+    color: #344054;
+}
+
+.weekly-note {
+    margin-top: 16px;
+    font-size: 11px;
+    color: #7b8490;
+}
+
+
+/* Main grid */
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(280px,1fr);
+    gap:18px;
+}
+.panel{
+    background:#fff;
+    border:1px solid #dfe4e8;
+    border-radius:8px;
+    overflow:hidden;
+}
+.panel-header{
+    padding:17px 20px;
+    border-bottom:1px solid #e5e8eb;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.panel-title{font-size:15px;font-weight:700}
+.panel-sub{font-size:11px;color:#7b8490;margin-top:4px}
+.view-all{font-size:11px;color:#087f63;font-weight:600}
+
+/* Attendance */
+table{width:100%;border-collapse:collapse}
+th{
+    text-align:left;
+    padding:11px 15px;
+    background:#fafbfc;
+    border-bottom:1px solid #e5e8eb;
+    color:#89919b;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+td{
+    padding:13px 15px;
+    border-bottom:1px solid #edf0f2;
+    color:#344054;
+    font-size:12px;
+}
+.empty{
+    padding:54px 20px;
+    text-align:center;
+    color:#7b8490;
+    font-size:12px;
+}
+.status-present{color:#087f63;font-weight:600}
+
+/* Quick actions */
+.actions{
+    padding:15px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+}
+.action{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fff;
+    border:1px solid #e0e4e8;
+    border-radius:7px;
+    padding:11px;
+}
+.action:hover{background:#fafbfb;border-color:#ccd3d8}
+.action-icon{
+    width:34px;height:34px;
+    border-radius:6px;
+    background:#f1f3f5;
+    color:#344054;
+    display:grid;
+    place-items:center;
+    font-size:15px;
+    flex:0 0 34px;
+}
+.action-title{font-size:12px;font-weight:700;color:#172033}
+.action-text{font-size:10px;color:#7b8490;margin-top:3px}
+
+
+/* Responsive */
+@media (max-width: 1250px) {
+    .stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+@media (max-width: 950px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 760px) {
+    .sidebar {
+        width: 190px;
+    }
+    .main {
+        margin-left: 190px;
+        width: calc(100% - 190px);
+    }
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .topbar {
+        padding: 0 18px;
+    }
+    .content {
+        padding: 20px 18px;
+    }
+}
+@media (max-width: 520px) {
+    .sidebar {
+        width: 68px;
+        overflow: hidden;
+    }
+    .sidebar .brand {
+        padding: 0 16px;
+    }
+    .sidebar .brand > div:last-child,
+    .sidebar .nav-title,
+    .sidebar .nav:not(.logout),
+    .sidebar .admin-box,
+    .sidebar .nav-gap {
+        display: none;
+    }
+    .sidebar .nav.logout {
+        justify-content: center;
+        padding: 0;
+    }
+    .main {
+        margin-left: 68px;
+        width: calc(100% - 68px);
+    }
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    .top-right {
+        gap: 5px;
+    }
+    .top-admin {
+        display: none;
+    }
+    .topbar {
+        padding: 0 12px;
+    }
+    .page-title {
+        font-size: 19px;
+    }
+    .content {
+        padding: 15px 10px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-icon">◉</div>
+        <div>
+            <div class="brand-name">Face<span>Track</span></div>
+            <div class="brand-sub">Attendance Management</div>
+        </div>
+    </div>
+
+    <nav class="nav-area">
+        <div class="nav-title">Main</div>
+
+        <a href="/dashboard" class="nav active">
+            <span class="nav-icon">⌂</span> Dashboard
+        </a>
+
+        <a href="/employees" class="nav">
+            <span class="nav-icon">♙</span> Employees
+        </a>
+
+        <a href="/recognition" class="nav">
+            <span class="nav-icon">◉</span> Face Recognition
+        </a>
+
+        <a href="/attendance" class="nav">
+            <span class="nav-icon">✓</span> Attendance
+        </a>
+
+        <a href="/reports" class="nav">
+            <span class="nav-icon">▥</span> Reports
+        </a>
+
+        <div class="nav-gap"></div>
+
+        <div class="nav-title">Administration</div>
+
+        <a href="/admin/registrations" class="nav">
+            <span class="nav-icon">✎</span> Registration Requests
+        </a>
+
+        <a href="{{ url_for('admin_leave_management') }}" class="nav">
+            <span class="nav-icon">📅</span> Leave Management
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="admin-box">
+            <div class="avatar">{{ (session.get('admin_name','A')[:1] or 'A')|upper }}</div>
+            <div>
+                <div class="admin-name">{{ session.get('admin_name','Admin') }}</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+        </div>
+
+        <a href="/logout" class="nav logout">
+            <span class="nav-icon">↪</span> Logout
+        </a>
+    </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+    <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">
+            Here's what's happening with your attendance system today.
+        </div>
+    </div>
+
+    <div class="top-right">
+        <div class="date" id="currentDate"></div>
+
+        <div class="top-admin">
+            <div class="avatar">{{ (session.get('admin_name','A')[:1] or 'A')|upper }}</div>
+            <div>
+                <strong>{{ session.get('admin_name','Admin') }}</strong>
+                <small>Administrator</small>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="content">
+
+    
+<section class="stats">
+
+    <div class="stat">
+        <div class="stat-label">Total Employees</div>
+        <div class="stat-number">{{ total_employees }}</div>
+        <div class="stat-note">Employee records in the system</div>
+
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">Present Today</div>
+        <div class="stat-number">{{ today_attendance }}</div>
+        <div class="stat-note">Employees marked present today</div>
+
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">Estimated Not Present</div>
+        <div class="stat-number">{{ absent_today }}</div>
+        <div class="stat-note">Not marked present today; not verified absent</div>
+
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">Attendance Rate</div>
+        <div class="stat-number">{{ today_attendance_percentage }}%</div>
+        <div class="stat-note">Present divided by total employees</div>
+
+    </div>
+
+    <div class="stat">
+        <div class="stat-label">Pending Requests</div>
+        <div class="stat-number">{{ pending_requests }}</div>
+        <div class="stat-note">Awaiting administrator review</div>
+
+    </div>
+
+</section>
+
+<section class="weekly-panel">
+
+    <div class="panel-header">
+        <div>
+            <div class="panel-title">Weekly Attendance</div>
+            <div class="panel-sub">
+                Daily employees marked present over the last seven calendar days
+            </div>
+        </div>
+        <span class="view-all">Last 7 Days</span>
+    </div>
+
+    <div class="weekly-body">
+
+        {% for day in weekly_attendance %}
+        <div class="weekly-row">
+
+            <div class="weekly-day">
+                {{ day.label }}
+            </div>
+
+            <div class="weekly-track">
+                <div
+                    class="weekly-bar"
+                    data-width="{{ ((day.total_present / total_employees * 100) if total_employees else 0) }}"
+                    title="{{ day.total_present }} employees present"
+                ></div>
+            </div>
+
+            <div class="weekly-value">
+                {{ day.total_present }}
+            </div>
+
+        </div>
+        {% endfor %}
+
+        <div class="weekly-note">
+            Numbers show employees with a Present attendance record for each day.
+            The bar width represents the proportion of all employee records.
+        </div>
+
+    </div>
+
+</section>
+
+
+    <section class="dashboard-grid">
+
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Today's Recent Attendance</div>
+                    <div class="panel-sub">Latest attendance records from the system</div>
+                </div>
+                <a href="/attendance" class="view-all">View all</a>
+            </div>
+
+            {% if recent_attendance %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for record in recent_attendance %}
+                    <tr>
+                        <td>{{ record.employee_id }}</td>
+                        <td>{{ record.name }}</td>
+                        <td>{{ record.attendance_time }}</td>
+                        <td class="status-present">{{ record.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">No attendance records yet.</div>
+            {% endif %}
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Quick Actions</div>
+                    <div class="panel-sub">Commonly used options</div>
+                </div>
+            </div>
+
+            <div class="actions">
+
+                <a href="/employee/register" class="action">
+                    <div class="action-icon">+</div>
+                    <div>
+                        <div class="action-title">Register Employee</div>
+                        <div class="action-text">Add a new employee</div>
+                    </div>
+                </a>
+
+                <a href="/recognition" class="action">
+                    <div class="action-icon">◉</div>
+                    <div>
+                        <div class="action-title">Face Recognition</div>
+                        <div class="action-text">Start the recognition camera</div>
+                    </div>
+                </a>
+
+                <a href="/attendance" class="action">
+                    <div class="action-icon">✓</div>
+                    <div>
+                        <div class="action-title">Attendance</div>
+                        <div class="action-text">View attendance records</div>
+                    </div>
+                </a>
+
+                <a href="/employees" class="action">
+                    <div class="action-icon">♙</div>
+                    <div>
+                        <div class="action-title">Employees</div>
+                        <div class="action-text">Manage employee records</div>
+                    </div>
+                </a>
+
+                <a href="/reports" class="action">
+                    <div class="action-icon">▥</div>
+                    <div>
+                        <div class="action-title">Reports</div>
+                        <div class="action-text">Generate reports</div>
+                    </div>
+                </a>
+
+                
+<a href="/admin/registrations" class="action">
+    <div class="action-icon">✎</div>
+
+    <div style="flex: 1;">
+        <div class="action-title">Registration Requests</div>
+        <div class="action-text">Review employee applications</div>
+    </div>
+
+    {% if pending_requests > 0 %}
+    <span style="
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 20px;
+        background: #fff0f0;
+        color: #b42318;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    ">
+        {{ pending_requests }} pending
+    </span>
+    {% else %}
+    <span style="
+        padding: 4px 9px;
+        border-radius: 20px;
+        background: #eaf7ef;
+        color: #16804a;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    ">
+        All clear
+    </span>
+    {% endif %}
+</a>
+
+
+            </div>
+        </div>
+
+    </section>
+
+</div>
+</main>
+</div>
+
+<script>
+document.getElementById("currentDate").textContent =
+    new Date().toLocaleDateString("en-IN", {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+</script>
+<script>
+document.querySelectorAll(".weekly-bar[data-width]").forEach(function (bar) {
+    const width = Number(bar.dataset.width);
+    bar.style.width = Math.max(0, Math.min(100, width)) + "%";
+});
+</script>
+</body>
+</html>

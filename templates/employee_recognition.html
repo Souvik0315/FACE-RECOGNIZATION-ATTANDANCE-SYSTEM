@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>FaceTrack | Employee Attendance</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6f8;
+    color: #172033;
+    min-height: 100vh;
+}
+
+.topbar {
+    height: 72px;
+    background: white;
+    border-bottom: 1px solid #e1e5e9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.logo span {
+    color: #087f63;
+}
+
+.employee-info {
+    font-size: 13px;
+    color: #667085;
+}
+
+.employee-info strong {
+    color: #172033;
+}
+
+.logout {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #a52a2a;
+    font-size: 13px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 45px auto;
+    padding: 0 20px;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.heading h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.heading p {
+    color: #667085;
+    font-size: 14px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #dfe4e8;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.camera {
+    width: 100%;
+    max-width: 700px;
+    height: 420px;
+    margin: auto;
+    background: #f0f2f4;
+    border: 1px solid #d7dce1;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #667085;
+}
+
+.placeholder-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+    color: #087f63;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+button {
+    height: 43px;
+    padding: 0 25px;
+    border-radius: 6px;
+    border: 1px solid #087f63;
+    background: #087f63;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.secondary {
+    background: white;
+    color: #344054;
+    border-color: #d4d9de;
+}
+
+.status {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 7px;
+    background: #f7f8f9;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+}
+
+.status.success {
+    display: block;
+    background: #edf8f3;
+    color: #087f63;
+    border: 1px solid #ccebdd;
+}
+
+.status.error {
+    display: block;
+    background: #fff1f1;
+    color: #a52a2a;
+    border: 1px solid #f1cccc;
+}
+
+.instructions {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fafbfc;
+    border: 1px solid #e5e8eb;
+    border-radius: 7px;
+}
+
+.instructions h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.instructions ul {
+    padding-left: 20px;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="logo">
+        Face<span>Track</span>
+    </div>
+
+    <div class="employee-info">
+
+        Logged in as:
+        <strong>{{ employee_name }}</strong>
+
+        &nbsp; | &nbsp;
+
+        ID:
+        <strong>{{ employee_id }}</strong>
+
+        <a
+            href="/employee/logout"
+            class="logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="heading">
+
+        <h1>Face Recognition Attendance</h1>
+
+        <p>
+            Capture your face to mark today's attendance.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="camera">
+
+            <video
+                id="camera"
+                autoplay
+                playsinline
+                muted
+            ></video>
+
+            <div
+                class="placeholder"
+                id="placeholder"
+            >
+
+                <div class="placeholder-icon">
+                    ◉
+                </div>
+
+                <strong>
+                    Camera is ready
+                </strong>
+
+                <span>
+                    Click Start Camera
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="buttons">
+
+            <button
+                id="startButton"
+                onclick="startCamera()"
+            >
+                Start Camera
+            </button>
+
+            <button
+                id="captureButton"
+                onclick="captureAndRecognize()"
+                disabled
+            >
+                Capture & Mark Attendance
+            </button>
+
+            <button
+                class="secondary"
+                onclick="stopCamera()"
+            >
+                Stop Camera
+            </button>
+
+        </div>
+
+
+        <div
+            id="status"
+            class="status"
+        ></div>
+
+
+        <div class="instructions">
+
+            <h3>
+                Before capturing
+            </h3>
+
+            <ul>
+
+                <li>
+                    Make sure your face is clearly visible.
+                </li>
+
+                <li>
+                    Use good lighting.
+                </li>
+
+                <li>
+                    Look directly at the camera.
+                </li>
+
+                <li>
+                    Only your face should be visible.
+                </li>
+
+                <li>
+                    Attendance can be marked once per day.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let stream = null;
+
+const camera =
+    document.getElementById("camera");
+
+const placeholder =
+    document.getElementById("placeholder");
+
+const startButton =
+    document.getElementById("startButton");
+
+const captureButton =
+    document.getElementById("captureButton");
+
+const statusBox =
+    document.getElementById("status");
+
+
+async function startCamera() {
+
+    try {
+
+        stream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: "user"
+                },
+
+                audio: false
+
+            });
+
+        camera.srcObject = stream;
+
+        camera.style.display = "block";
+
+        placeholder.style.display = "none";
+
+        captureButton.disabled = false;
+
+        startButton.disabled = true;
+
+        startButton.textContent =
+            "Camera Running";
+
+        showStatus(
+            "",
+            ""
+        );
+
+    }
+
+    catch (error) {
+
+        showStatus(
+            "Unable to access camera. Please allow camera permission.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function stopCamera() {
+
+    if (stream) {
+
+        stream.getTracks().forEach(
+            track => track.stop()
+        );
+
+        stream = null;
+
+    }
+
+    camera.srcObject = null;
+
+    camera.style.display = "none";
+
+    placeholder.style.display = "flex";
+
+    captureButton.disabled = true;
+
+    startButton.disabled = false;
+
+    startButton.textContent =
+        "Start Camera";
+
+}
+
+
+async function captureAndRecognize() {
+
+    if (!stream) {
+
+        showStatus(
+            "Please start the camera first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (!camera.videoWidth) {
+
+        showStatus(
+            "Camera is not ready yet.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    captureButton.disabled = true;
+
+    captureButton.textContent =
+        "Checking Face...";
+
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width =
+        camera.videoWidth;
+
+    canvas.height =
+        camera.videoHeight;
+
+
+    const context =
+        canvas.getContext("2d");
+
+    context.drawImage(
+        camera,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    const image =
+        canvas.toDataURL(
+            "image/jpeg",
+            0.90
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/employee/api/recognize",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        image: image
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            const confidence =
+                data.confidence
+                    ? (
+                        data.confidence * 100
+                    ).toFixed(1)
+                    : "0";
+
+
+            showStatus(
+                "✓ " +
+                data.message +
+                " Match: " +
+                confidence +
+                "%",
+                "success"
+            );
+
+        }
+
+        else {
+
+            showStatus(
+                data.message ||
+                "Face not recognized.",
+                "error"
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        showStatus(
+            "Server error. Please try again.",
+            "error"
+        );
+
+    }
+
+
+    captureButton.disabled = false;
+
+    captureButton.textContent =
+        "Capture & Mark Attendance";
+
+}
+
+
+function showStatus(
+    message,
+    type
+) {
+
+    statusBox.textContent =
+        message;
+
+    statusBox.className =
+        "status";
+
+    if (message) {
+
+        statusBox.classList.add(
+            type
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

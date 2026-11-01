@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+
+
+    <meta
+
+        name="viewport"
+
+        content="width=device-width, initial-scale=1.0"
+
+    >
+
+
+
+    <title>Face Recognition | Attendance System</title>
+
+
+
+    <style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--page:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#20252b;--muted:#6b7280;--accent:#176b4d;--accent-soft:#edf6f1;--danger:#a52a2a;--danger-soft:#fdf0f0;--warning:#8a6500;--warning-soft:#fff7df}
+body{font-family:Arial,Helvetica,sans-serif;min-height:100vh;background:var(--page);color:var(--text);font-size:14px}
+.page{min-height:100vh;padding:0}.container{max-width:1280px;margin:0 auto;padding:0 28px 35px}
+.header{background:#fff;border-bottom:1px solid var(--border);margin:0 -28px 24px;padding:22px 28px}
+.header h1{font-size:23px;margin-bottom:6px;letter-spacing:-.2px}.header p{color:var(--muted);font-size:12px}
+.main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.75fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:19px}
+.card h2{font-size:15px;margin-bottom:14px}
+.camera-box{width:100%;height:500px;background:#eef0f2;border:1px solid #d8dde1;border-radius:6px;overflow:hidden;position:relative}
+#camera{width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1)}
+#canvas{display:none}.camera-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7b838b;font-size:13px}
+.camera-status{margin-top:10px;padding:10px 12px;border-radius:5px;background:#f7f8f9;border:1px solid var(--border);color:var(--muted);font-size:11px}
+.status-active{color:var(--accent);background:var(--accent-soft);border-color:#dcebe4}.status-stopped{color:#7b4b4b}
+.buttons{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+button{border:0;border-radius:5px;padding:10px 15px;font-size:12px;font-weight:600;cursor:pointer}
+button:hover{opacity:.92}.start-btn{background:#252b31;color:#fff}.stop-btn{background:#a52a2a;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+.result-box{min-height:300px;display:flex;flex-direction:column;justify-content:center}.waiting{text-align:center;color:var(--muted)}.waiting-icon{font-size:38px;margin-bottom:12px}
+.employee-result{display:none}.success-badge{display:inline-block;background:var(--accent-soft);color:var(--accent);border:1px solid #dcebe4;padding:6px 10px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:15px}
+.employee-info{display:grid;gap:8px}.info-row{padding:11px 12px;background:#fafafa;border:1px solid var(--border);border-radius:5px}
+.info-label{color:#8a9198;font-size:9px;font-weight:700;margin-bottom:4px}.info-value{font-size:14px;font-weight:600}
+.attendance-message{margin-top:12px;padding:12px;border-radius:5px;font-size:11px;font-weight:600;text-align:center}
+.attendance-success{background:var(--accent-soft);border:1px solid #dcebe4;color:var(--accent)}
+.attendance-existing{background:var(--warning-soft);border:1px solid #f0dfad;color:var(--warning)}
+.attendance-error{background:var(--danger-soft);border:1px solid #efd2d2;color:var(--danger)}
+.unknown-box{display:none;padding:18px;background:var(--danger-soft);border:1px solid #efd2d2;border-radius:6px;text-align:center}
+.unknown-icon{font-size:30px;margin-bottom:8px}.unknown-box p{margin-top:8px;color:var(--muted)!important;font-size:11px}
+.page-tag{display:inline-block;margin-bottom:7px;color:var(--accent);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}
+@media(max-width:850px){.main-grid{grid-template-columns:1fr}.camera-box{height:400px}}
+@media(max-width:600px){.container{padding:0 16px 25px}.header{margin:0 -16px 20px;padding:20px 16px}.camera-box{height:320px}}
+</style>
+
+</head>
+
+
+
+
+
+<body>
+
+
+
+<div class="page">
+
+
+
+    <div class="container">
+
+
+
+        <!-- =====================================
+
+             HEADER
+
+        ====================================== -->
+
+
+
+        <div class="header">
+
+
+
+            <div class="page-tag">Attendance System</div><h1>Face Recognition</h1>
+
+
+
+            <p>
+
+                Use the live camera to recognize a registered employee
+
+                and automatically mark attendance.
+
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- =====================================
+
+             MAIN GRID
+
+        ====================================== -->
+
+
+
+        <div class="main-grid">
+
+
+
+
+
+            <!-- =================================
+
+                 CAMERA CARD
+
+            ================================== -->
+
+
+
+            <div class="card">
+
+
+
+                <h2>Live Recognition Camera</h2>
+                    <div class="buttons" style="margin:0 0 12px 0;">
+                        <button id="startCamera" class="start-btn" type="button">Start Camera</button>
+                        <button id="stopCamera" class="stop-btn" type="button" disabled>Stop Camera</button>
+                    </div>
+                    <div id="cameraStatus" class="camera-status status-stopped" style="margin:0 0 12px 0;">
+                        Camera is stopped. Click "Start Camera".
+                    </div>
+
+
+
+                <div class="camera-box">
+
+
+
+                    <video
+
+                        id="camera"
+
+                        autoplay
+
+                        playsinline
+
+                        muted
+
+                    ></video>
+
+
+
+                    <div
+
+                        id="cameraPlaceholder"
+
+                        class="camera-placeholder"
+
+                    >
+
+                        Camera is stopped
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <canvas id="canvas"></canvas>
+
+
+
+
+
+                <!-- Camera status -->
+
+
+
+            </div>
+
+
+
+
+
+            <!-- =================================
+
+                 RESULT CARD
+
+            ================================== -->
+
+
+
+            <div class="card">
+
+
+
+                <h2>Recognition Result</h2>
+
+
+
+                <div class="result-box">
+
+
+
+
+
+                    <!-- Waiting -->
+
+
+
+                    <div
+
+                        id="waiting"
+
+                        class="waiting"
+
+                    >
+
+
+
+                        <div class="waiting-icon">
+
+                            ○
+
+                        </div>
+
+
+
+                        <p>
+
+                            Start the camera to begin recognition.
+
+                        </p>
+
+
+
+                    </div>
+
+
+
+
+
+                    <!-- Employee result -->
+
+
+
+                    <div
+
+                        id="employeeResult"
+
+                        class="employee-result"
+
+                    >
+
+
+
+                        <span class="success-badge">
+
+                            Employee Recognized
+
+                        </span>
+
+
+
+
+
+                        <div class="employee-info">
+
+
+
+
+
+                            <div class="info-row">
+
+
+
+                                <div class="info-label">
+
+                                    EMPLOYEE ID
+
+                                </div>
+
+
+
+                                <div
+
+                                    id="employeeId"
+
+                                    class="info-value"
+
+                                >
+
+                                    -
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+
+                            <div class="info-row">
+
+
+
+                                <div class="info-label">
+
+                                    NAME
+
+                                </div>
+
+
+
+                                <div
+
+                                    id="employeeName"
+
+                                    class="info-value"
+
+                                >
+
+                                    -
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+
+                            <div class="info-row">
+
+
+
+                                <div class="info-label">
+
+                                    CONFIDENCE
+
+                                </div>
+
+
+
+                                <div
+
+                                    id="confidence"
+
+                                    class="info-value"
+
+                                >
+
+                                    -
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div
+
+                            id="attendanceMessage"
+
+                            class="attendance-message"
+
+                        >
+
+                            Checking attendance...
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <!-- Unknown -->
+
+
+
+                    <div
+
+                        id="unknownBox"
+
+                        class="unknown-box"
+
+                    >
+
+
+
+                        <div class="unknown-icon">
+
+                            🔴
+
+                        </div>
+
+
+
+                        <h3>Unknown Face</h3>
+
+
+
+                        <p style="margin-top:8px;color:#94a3b8;">
+
+                            No registered employee matched this face.
+
+                        </p>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+
+    // ==========================================
+
+    // ELEMENTS
+
+    // ==========================================
+
+
+
+    const camera =
+
+        document.getElementById("camera");
+
+
+
+    const canvas =
+
+        document.getElementById("canvas");
+
+
+
+    const cameraPlaceholder =
+
+        document.getElementById("cameraPlaceholder");
+
+
+
+    const cameraStatus =
+
+        document.getElementById("cameraStatus");
+
+
+
+    const startCameraBtn =
+
+        document.getElementById("startCamera");
+
+
+
+    const stopCameraBtn =
+
+        document.getElementById("stopCamera");
+
+
+
+    const waiting =
+
+        document.getElementById("waiting");
+
+
+
+    const employeeResult =
+
+        document.getElementById("employeeResult");
+
+
+
+    const unknownBox =
+
+        document.getElementById("unknownBox");
+
+
+
+    const employeeId =
+
+        document.getElementById("employeeId");
+
+
+
+    const employeeName =
+
+        document.getElementById("employeeName");
+
+
+
+    const confidence =
+
+        document.getElementById("confidence");
+
+
+
+    const attendanceMessage =
+
+        document.getElementById("attendanceMessage");
+
+
+
+
+
+    // ==========================================
+
+    // VARIABLES
+
+    // ==========================================
+
+
+
+    let stream = null;
+
+
+
+    let recognitionTimer = null;
+
+
+
+    let recognitionRunning = false;
+
+
+
+
+
+    // ==========================================
+
+    // START CAMERA
+
+    // ==========================================
+
+
+
+    startCameraBtn.addEventListener(
+
+        "click",
+
+        startCamera
+
+    );
+
+
+
+
+
+    async function startCamera() {
+
+
+
+        try {
+
+
+
+            stream =
+
+                await navigator.mediaDevices.getUserMedia({
+
+
+
+                    video: {
+
+                        width: {
+
+                            ideal: 1280
+
+                        },
+
+
+
+                        height: {
+
+                            ideal: 720
+
+                        },
+
+
+
+                        facingMode: "user"
+
+                    },
+
+
+
+                    audio: false
+
+
+
+                });
+
+
+
+
+
+            camera.srcObject = stream;
+            camera.muted = true;
+            camera.setAttribute("playsinline", "");
+            camera.setAttribute("autoplay", "");
+            await camera.play();
+
+            camera.style.display = "block";
+
+
+
+            cameraPlaceholder.style.display =
+
+                "none";
+
+
+
+
+
+            cameraStatus.innerHTML =
+
+                "Camera active — recognizing...";
+
+
+
+            cameraStatus.className =
+
+                "camera-status status-active";
+
+
+
+
+
+            startCameraBtn.disabled = true;
+
+
+
+            stopCameraBtn.disabled = false;
+
+
+
+
+
+            waiting.style.display = "none";
+
+
+
+
+
+            recognitionRunning = true;
+
+
+
+
+
+            // Start recognition
+
+
+
+            recognitionTimer =
+
+                setInterval(
+
+                    recognizeCurrentFrame,
+
+                    1500
+
+                );
+
+
+
+
+
+        } catch (error) {
+
+
+
+            console.error(
+
+                "Camera error:",
+
+                error
+
+            );
+
+
+
+            alert(
+
+                "Unable to access camera.\n\n" +
+
+                "Please allow camera permission " +
+
+                "in your browser."
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    // ==========================================
+
+    // STOP CAMERA
+
+    // ==========================================
+
+
+
+    stopCameraBtn.addEventListener(
+
+        "click",
+
+        stopCamera
+
+    );
+
+
+
+
+
+    function stopCamera() {
+
+
+
+        recognitionRunning = false;
+
+
+
+
+
+        if (recognitionTimer) {
+
+
+
+            clearInterval(
+
+                recognitionTimer
+
+            );
+
+
+
+            recognitionTimer = null;
+
+
+
+        }
+
+
+
+
+
+        if (stream) {
+
+
+
+            stream
+
+                .getTracks()
+
+                .forEach(
+
+                    track => track.stop()
+
+                );
+
+
+
+            stream = null;
+
+
+
+        }
+
+
+
+
+
+        camera.srcObject = null;
+
+
+
+        camera.style.display = "none";
+
+
+
+        cameraPlaceholder.style.display =
+
+            "flex";
+
+
+
+
+
+        cameraStatus.innerHTML =
+
+            "Camera stopped";
+
+
+
+        cameraStatus.className =
+
+            "camera-status status-stopped";
+
+
+
+
+
+        startCameraBtn.disabled = false;
+
+
+
+        stopCameraBtn.disabled = true;
+
+
+
+
+
+        waiting.style.display = "block";
+
+
+
+        employeeResult.style.display = "none";
+
+
+
+        unknownBox.style.display = "none";
+
+
+
+    }
+
+
+
+
+
+    // ==========================================
+
+    // CAPTURE CURRENT VIDEO FRAME
+
+    // ==========================================
+
+
+
+    async function recognizeCurrentFrame() {
+
+
+
+        if (!recognitionRunning) {
+
+            return;
+
+        }
+
+
+
+
+
+        if (
+
+            camera.videoWidth === 0 ||
+
+            camera.videoHeight === 0
+
+        ) {
+
+            return;
+
+        }
+
+
+
+
+
+        // Set canvas size
+
+
+
+        canvas.width =
+
+            camera.videoWidth;
+
+
+
+        canvas.height =
+
+            camera.videoHeight;
+
+
+
+
+
+        const context =
+
+            canvas.getContext("2d");
+
+
+
+
+
+        // Draw current camera frame
+
+
+
+        context.drawImage(
+
+            camera,
+
+            0,
+
+            0,
+
+            canvas.width,
+
+            canvas.height
+
+        );
+
+
+
+
+
+        // Convert image to Base64
+
+
+
+        const imageData =
+
+            canvas.toDataURL(
+
+                "image/jpeg",
+
+                0.80
+
+            );
+
+
+
+
+
+        try {
+
+
+
+            const response =
+
+                await fetch(
+
+                    "/api/recognize",
+
+                    {
+
+
+
+                        method: "POST",
+
+
+
+                        headers: {
+
+                            "Content-Type":
+
+                                "application/json"
+
+                        },
+
+
+
+                        body: JSON.stringify({
+
+                            image: imageData
+
+                        })
+
+
+
+                    }
+
+                );
+
+
+
+
+
+            const data =
+
+                await response.json();
+
+
+
+
+
+            console.log(
+
+                "Recognition response:",
+
+                data
+
+            );
+
+
+
+
+
+            if (!data.success) {
+
+
+
+                console.error(
+
+                    data.message
+
+                );
+
+
+
+                return;
+
+
+
+            }
+
+
+
+
+
+            processRecognitionResults(
+
+                data.results
+
+            );
+
+
+
+
+
+        } catch (error) {
+
+
+
+            console.error(
+
+                "Recognition request error:",
+
+                error
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    // ==========================================
+
+    // PROCESS RECOGNITION RESULT
+
+    // ==========================================
+
+
+
+    function processRecognitionResults(
+
+        results
+
+    ) {
+
+
+
+        // No faces / no matches
+
+
+
+        if (
+
+            !results ||
+
+            results.length === 0
+
+        ) {
+
+
+
+            employeeResult.style.display =
+
+                "none";
+
+
+
+            unknownBox.style.display =
+
+                "block";
+
+
+
+            return;
+
+
+
+        }
+
+
+
+
+
+        // Take first recognized result
+
+
+
+        const result =
+
+            results[0];
+
+
+
+
+
+        // If employee was recognized
+
+
+
+        if (result.employee_id) {
+
+
+
+            waiting.style.display =
+
+                "none";
+
+
+
+            unknownBox.style.display =
+
+                "none";
+
+
+
+            employeeResult.style.display =
+
+                "block";
+
+
+
+
+
+            // Employee ID
+
+
+
+            employeeId.textContent =
+
+                result.employee_id;
+
+
+
+
+
+            // Employee name
+
+
+
+            employeeName.textContent =
+
+                result.name ||
+
+                "Registered Employee";
+
+
+
+
+
+            // Confidence
+
+
+
+            let confidenceValue =
+
+                Number(
+
+                    result.confidence || 0
+
+                );
+
+
+
+
+
+            // Handle confidence formats
+
+
+
+            if (confidenceValue <= 1) {
+
+
+
+                confidenceValue *= 100;
+
+
+
+            }
+
+
+
+
+
+            confidence.textContent =
+
+                confidenceValue.toFixed(1)
+
+                + "%";
+
+
+
+
+
+            // Attendance status
+
+
+
+            if (
+
+                result.attendance_marked === true
+
+            ) {
+
+
+
+                attendanceMessage.textContent =
+
+                    "✅ Attendance Marked Successfully";
+
+
+
+                attendanceMessage.className =
+
+                    "attendance-message attendance-success";
+
+
+
+            }
+
+
+
+            else {
+
+
+
+                attendanceMessage.textContent =
+
+                    "Already marked today";
+
+
+
+                attendanceMessage.className =
+
+                    "attendance-message attendance-existing";
+
+
+
+            }
+
+
+
+        }
+
+
+
+        else {
+
+
+
+            employeeResult.style.display =
+
+                "none";
+
+
+
+            unknownBox.style.display =
+
+                "block";
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    // ==========================================
+
+    // STOP CAMERA WHEN PAGE CLOSES
+
+    // ==========================================
+
+
+
+    window.addEventListener(
+
+        "beforeunload",
+
+        () => {
+
+
+
+            stopCamera();
+
+
+
+        }
+
+    );
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

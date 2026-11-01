@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaceTrack | Registration Requests</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --page:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#20252b;
+ --muted:#6b7280;--accent:#176b4d;--accent-soft:#edf6f1;
+ --danger:#a52a2a;--danger-soft:#fbeeee;--success:#176b4d;
+}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--page);color:var(--text);font-size:14px}
+a{text-decoration:none;color:inherit}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:238px;flex:0 0 238px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.brand{height:78px;padding:0 22px;display:flex;align-items:center;border-bottom:1px solid var(--border)}
+.brand-mark{width:34px;height:34px;border:1px solid #cfd5d1;border-radius:7px;display:grid;place-items:center;margin-right:10px;color:var(--accent)}
+.brand-name{font-size:19px;font-weight:700}.brand-name span{color:var(--accent)}
+.brand-caption{font-size:10px;color:var(--muted);margin-top:3px}
+.nav-area{padding:21px 13px}.nav-heading{color:#9aa0a6;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;padding:0 10px 8px}
+.nav{height:42px;display:flex;align-items:center;gap:11px;padding:0 11px;margin:3px 0;border-radius:6px;color:#4b5563;font-size:13px;border:1px solid transparent}
+.nav:hover{background:#f5f6f7;color:var(--text)}
+.nav.active{background:var(--accent-soft);border-color:#dcebe4;color:var(--accent);font-weight:600}
+.nav-icon{width:19px;text-align:center;font-size:14px}.nav-divider{height:20px}
+.sidebar-bottom{margin-top:auto;padding:14px;border-top:1px solid var(--border)}
+.admin-box{display:flex;align-items:center;gap:10px;padding:9px;margin-bottom:8px}
+.avatar{width:34px;height:34px;border-radius:50%;background:#eceff1;color:#374151;display:grid;place-items:center;font-weight:700;font-size:12px;flex:0 0 34px}
+.admin-box strong{font-size:12px;display:block}.admin-box small{color:var(--muted);font-size:10px}
+.logout{color:#8b2e2e}
+.main{width:calc(100% - 238px);margin-left:238px;min-width:0}
+.topbar{height:78px;background:#fff;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:21px;font-weight:700}.page-subtitle{color:var(--muted);font-size:12px;margin-top:4px}
+.top-right{display:flex;align-items:center;gap:16px}.date{color:var(--muted);font-size:12px}
+.top-admin{display:flex;align-items:center;gap:9px;padding-left:16px;border-left:1px solid var(--border)}
+.top-admin-name{font-size:12px;font-weight:600}.top-admin-role{color:var(--muted);font-size:10px;margin-top:2px}
+.content{padding:28px 32px 40px;max-width:1500px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px}
+.stat-label{color:#6b7280;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.stat-value{font-size:27px;font-weight:700;margin-top:9px}.stat-note{color:var(--muted);font-size:10px;margin-top:3px}
+.panel{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.panel-header{padding:17px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:15px}
+.panel-title{font-size:15px;font-weight:700}.panel-description{color:var(--muted);font-size:11px;margin-top:4px}
+.filters{display:flex;gap:7px;flex-wrap:wrap}
+.filter{padding:8px 15px;border:1px solid #d7dce1;border-radius:5px;background:#fff;color:#4b5563;font-size:11px;font-weight:600}
+.filter:hover{background:#f5f6f7}.filter.active{background:#252b31;color:#fff;border-color:#252b31}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;color:#8a9198;background:#fafafa;border-bottom:1px solid var(--border);padding:11px 15px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.45px}
+td{padding:13px 15px;border-bottom:1px solid #edf0f2;color:#374151;font-size:12px}
+tbody tr:hover{background:#fafbfb}
+.employee-id{font-weight:700;color:#315d9b}.employee-name{font-weight:600;color:#20252b}.email{color:#4b5563}
+.status{display:inline-block;padding:5px 9px;border-radius:12px;font-size:10px;font-weight:700}
+.pending{background:#fff7df;color:#8a6500}.approved{background:#edf6f1;color:#176b4d}.rejected{background:#fbeeee;color:#a52a2a}
+.view-btn{display:inline-block;padding:8px 13px;border-radius:5px;background:#f0f1f2;border:1px solid #d7dce1;color:#263238;font-size:11px;font-weight:600}
+.view-btn:hover{background:#e7e9eb}
+.empty{padding:55px 20px;text-align:center;color:var(--muted);font-size:12px}.empty-icon{font-size:24px;color:#a8afb5;margin-bottom:8px}
+.footer{text-align:center;color:#9aa0a6;font-size:10px;margin-top:22px}
+@media(max-width:900px){.summary{grid-template-columns:1fr}.sidebar{width:70px;flex-basis:70px}.brand{padding:0;justify-content:center}.brand-mark{margin:0}.brand-text,.nav-heading,.nav span:not(.nav-icon),.admin-info{display:none}.nav{justify-content:center;padding:0}.admin-box{justify-content:center}.main{width:calc(100% - 70px);margin-left:70px}.topbar,.content{padding-left:18px;padding-right:18px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">◉</div>
+    <div class="brand-text">
+      <div class="brand-name">Face<span>Track</span></div>
+      <div class="brand-caption">Attendance Management</div>
+    </div>
+  </div>
+
+  <nav class="nav-area">
+    <div class="nav-heading">Main</div>
+    <a href="{{ url_for('dashboard') }}" class="nav"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+    <a href="{{ url_for('employees') }}" class="nav"><span class="nav-icon">♙</span><span>Employees</span></a>
+    <a href="{{ url_for('recognition') }}" class="nav"><span class="nav-icon">◉</span><span>Face Recognition</span></a>
+    <a href="{{ url_for('attendance') }}" class="nav"><span class="nav-icon">✓</span><span>Attendance</span></a>
+    <a href="{{ url_for('reports') }}" class="nav"><span class="nav-icon">▥</span><span>Reports</span></a>
+    <div class="nav-divider"></div>
+    <div class="nav-heading">Administration</div>
+    <a href="{{ url_for('registration_requests') }}" class="nav active"><span class="nav-icon">✎</span><span>Registration Requests</span></a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="admin-box">
+      <div class="avatar">{{ (session.get('admin_name','A')[:1] or 'A')|upper }}</div>
+      <div class="admin-info">
+        <strong>{{ session.get('admin_name','Admin') }}</strong>
+        <small>Administrator</small>
+      </div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="nav logout"><span class="nav-icon">↪</span><span>Logout</span></a>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div>
+      <div class="page-title">Registration Requests</div>
+      <div class="page-subtitle">Review employee applications before adding them to the attendance system.</div>
+    </div>
+    <div class="top-right">
+      <div class="date" id="currentDate"></div>
+      <div class="top-admin">
+        <div class="avatar">{{ (session.get('admin_name','A')[:1] or 'A')|upper }}</div>
+        <div>
+          <div class="top-admin-name">{{ session.get('admin_name','Admin') }}</div>
+          <div class="top-admin-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    {% set pending_count = registrations|selectattr('status','equalto','Pending')|list|length %}
+    {% set approved_count = registrations|selectattr('status','equalto','Approved')|list|length %}
+    {% set rejected_count = registrations|selectattr('status','equalto','Rejected')|list|length %}
+
+    <section class="summary">
+      <div class="stat">
+        <div class="stat-label">Total Requests</div>
+        <div class="stat-value">{{ registrations|length }}</div>
+        <div class="stat-note">Registration applications</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value">{{ pending_count }}</div>
+        <div class="stat-note">Waiting for review</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Approved</div>
+        <div class="stat-value">{{ approved_count }}</div>
+        <div class="stat-note">Added to the system</div>
+      </div>
+    </section>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Employee Applications</div>
+          <div class="panel-description">Review submitted employee information and registration status.</div>
+        </div>
+        <div class="filters">
+          <a class="filter {% if not selected_status %}active{% endif %}" href="{{ url_for('registration_requests') }}">All</a>
+          <a class="filter {% if selected_status == 'Pending' %}active{% endif %}" href="{{ url_for('registration_requests', status='Pending') }}">Pending</a>
+          <a class="filter {% if selected_status == 'Approved' %}active{% endif %}" href="{{ url_for('registration_requests', status='Approved') }}">Approved</a>
+          <a class="filter {% if selected_status == 'Rejected' %}active{% endif %}" href="{{ url_for('registration_requests', status='Rejected') }}">Rejected</a>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+      {% if registrations %}
+        <table>
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for registration in registrations %}
+            <tr>
+              <td class="employee-id">{{ registration.employee_id }}</td>
+              <td class="employee-name">{{ registration.name }}</td>
+              <td class="email">{{ registration.email or '-' }}</td>
+              <td>{{ registration.department or '-' }}</td>
+              <td>{{ registration.designation or '-' }}</td>
+              <td>
+                {% if registration.status == 'Pending' %}
+                  <span class="status pending">Pending</span>
+                {% elif registration.status == 'Approved' %}
+                  <span class="status approved">Approved</span>
+                {% else %}
+                  <span class="status rejected">Rejected</span>
+                {% endif %}
+              </td>
+              <td>
+                <a class="view-btn" href="{{ url_for('registration_detail', request_id=registration.id) }}">View</a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty">
+          <div class="empty-icon">○</div>
+          No registration requests found.
+        </div>
+      {% endif %}
+      </div>
+    </div>
+
+    <div class="footer">FaceTrack · Face Recognition Attendance System</div>
+  </div>
+</main>
+</div>
+
+<script>
+document.getElementById("currentDate").textContent =
+  new Date().toLocaleDateString("en-IN", {
+    day:"2-digit", month:"short", year:"numeric"
+  });
+</script>
+</body>
+</html>

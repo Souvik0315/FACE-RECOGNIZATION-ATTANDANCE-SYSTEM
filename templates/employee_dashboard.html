@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>FaceTrack | Employee Dashboard</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f6f7f9;
+
+    color: #172033;
+
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.layout {
+
+    display: flex;
+
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+
+    width: 240px;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e4e7eb;
+
+    padding: 25px 18px;
+
+    position: fixed;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.logo {
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    padding: 0 12px;
+
+    margin-bottom: 35px;
+}
+
+.logo span {
+
+    color: #087f63;
+}
+
+
+.menu-title {
+
+    font-size: 11px;
+
+    color: #98a2b3;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    padding: 0 12px;
+
+    margin-bottom: 10px;
+}
+
+
+.menu {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.menu a {
+
+    text-decoration: none;
+
+    color: #667085;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+
+.menu a:hover {
+
+    background: #f0f7f5;
+
+    color: #087f63;
+}
+
+
+.menu a.active {
+
+    background: #eaf6f2;
+
+    color: #087f63;
+
+    font-weight: 600;
+}
+
+
+.menu a.logout {
+
+    margin-top: 25px;
+
+    color: #a52a2a;
+}
+
+
+.menu a.logout:hover {
+
+    background: #fff1f1;
+
+    color: #a52a2a;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.main {
+
+    margin-left: 240px;
+
+    width: calc(100% - 240px);
+
+    padding: 30px;
+
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.topbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 30px;
+}
+
+
+.welcome h1 {
+
+    font-size: 28px;
+
+    margin-bottom: 6px;
+}
+
+
+.welcome p {
+
+    color: #667085;
+
+    font-size: 14px;
+}
+
+
+.employee-mini {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.avatar {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #eaf6f2;
+
+    color: #087f63;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    font-size: 15px;
+}
+
+
+.employee-mini-text {
+
+    text-align: right;
+}
+
+
+.employee-mini-text strong {
+
+    display: block;
+
+    font-size: 14px;
+}
+
+
+.employee-mini-text span {
+
+    font-size: 12px;
+
+    color: #667085;
+}
+
+
+/* =====================================================
+   STAT CARDS
+===================================================== */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+
+.stat-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7eb;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+
+.stat-info span {
+
+    display: block;
+
+    font-size: 13px;
+
+    color: #667085;
+
+    margin-bottom: 8px;
+}
+
+
+.stat-info strong {
+
+    font-size: 28px;
+
+    color: #172033;
+}
+
+
+.stat-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    border-radius: 10px;
+
+    background: #eaf6f2;
+
+    color: #087f63;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.content-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1.4fr
+        1fr;
+
+    gap: 20px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card {
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7eb;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 20px;
+}
+
+
+.card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.card-header h2 {
+
+    font-size: 17px;
+}
+
+
+.card-header a {
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    color: #087f63;
+}
+
+
+/* =====================================================
+   TODAY ATTENDANCE
+===================================================== */
+
+.today-box {
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    background: #f8fafb;
+
+    border: 1px solid #e7eaed;
+}
+
+
+.today-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.status-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.status-icon.success {
+
+    background: #e8f7ef;
+
+    color: #16834d;
+}
+
+
+.status-icon.pending {
+
+    background: #fff6df;
+
+    color: #a36b00;
+}
+
+
+.status-text strong {
+
+    display: block;
+
+    margin-bottom: 5px;
+}
+
+
+.status-text span {
+
+    font-size: 13px;
+
+    color: #667085;
+}
+
+
+.attendance-button {
+
+    display: inline-block;
+
+    margin-top: 18px;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    background: #087f63;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.attendance-button:hover {
+
+    background: #066c55;
+}
+
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
+.profile-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.profile-avatar {
+
+    width: 58px;
+
+    height: 58px;
+
+    border-radius: 50%;
+
+    background: #eaf6f2;
+
+    color: #087f63;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+
+.profile-name strong {
+
+    display: block;
+
+    font-size: 17px;
+
+    margin-bottom: 4px;
+}
+
+
+.profile-name span {
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+.info-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.info-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid #edf0f2;
+}
+
+
+.info-item:last-child {
+
+    border-bottom: none;
+
+    padding-bottom: 0;
+}
+
+
+.info-item span {
+
+    font-size: 13px;
+
+    color: #667085;
+}
+
+
+.info-item strong {
+
+    font-size: 13px;
+
+    text-align: right;
+}
+
+
+/* =====================================================
+   RECENT ATTENDANCE TABLE
+===================================================== */
+
+.table-wrapper {
+
+    overflow-x: auto;
+}
+
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+th {
+
+    text-align: left;
+
+    font-size: 12px;
+
+    color: #667085;
+
+    padding: 12px;
+
+    border-bottom: 1px solid #e4e7eb;
+
+    white-space: nowrap;
+}
+
+
+td {
+
+    padding: 13px 12px;
+
+    font-size: 13px;
+
+    border-bottom: 1px solid #f0f2f4;
+
+    white-space: nowrap;
+}
+
+
+.status-badge {
+
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+.status-present {
+
+    background: #e8f7ef;
+
+    color: #16834d;
+}
+
+
+.status-absent {
+
+    background: #fff0f0;
+
+    color: #b42318;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.empty {
+
+    text-align: center;
+
+    padding: 30px 10px;
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .stats {
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+    .content-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 750px) {
+
+    .sidebar {
+
+        width: 200px;
+    }
+
+    .main {
+
+        margin-left: 200px;
+
+        width: calc(100% - 200px);
+
+        padding: 20px;
+    }
+
+    .topbar {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+    .employee-mini {
+
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .sidebar {
+
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+
+        border-right: none;
+
+        border-bottom: 1px solid #e4e7eb;
+
+        padding: 15px;
+    }
+
+    .layout {
+
+        display: block;
+    }
+
+    .main {
+
+        margin-left: 0;
+
+        width: 100%;
+
+        padding: 18px;
+    }
+
+    .logo {
+
+        margin-bottom: 18px;
+    }
+
+    .menu {
+
+        flex-direction: row;
+
+        overflow-x: auto;
+    }
+
+    .menu a {
+
+        white-space: nowrap;
+    }
+
+    .menu a.logout {
+
+        margin-top: 0;
+    }
+
+    .stats {
+
+        grid-template-columns: 1fr;
+    }
+
+    .welcome h1 {
+
+        font-size: 23px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Face<span>Track</span>
+        </div>
+
+
+        <div class="menu-title">
+            Employee Portal
+        </div>
+
+
+        <nav class="menu">
+
+            <a
+                href="{{ url_for('employee_dashboard') }}"
+                class="active"
+            >
+                🏠 Dashboard
+            </a>
+
+
+            <a
+                href="{{ url_for('employee_recognition') }}"
+            >
+                📷 Mark Attendance
+            </a>
+
+
+            <!-- These pages will be added in later
+                 Phase 1 steps -->
+
+            <a href="{{ url_for('employee_attendance_calendar') }}">
+                📅 Attendance Calendar
+            </a>
+            <a href="{{ url_for('employee_leave_requests') }}">
+                📝 My Leave Requests
+            </a>
+
+
+            <a href="{{ url_for('employee_profile') }}"
+                style="display: block; position: relative; z-index: 10; pointer-events: auto; cursor: pointer;">
+                👤 My Profile
+            </a>
+
+
+            <a href="{{ url_for('employee_change_password') }}"
+                 style="display:block; position:relative; z-index:10; pointer-events:auto; cursor:pointer;">
+                🔒 Change Password
+            </a>
+
+
+            <a
+                href="{{ url_for('employee_logout') }}"
+                class="logout"
+            >
+                🚪 Logout
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =================================================
+         MAIN CONTENT
+    ================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div class="welcome">
+
+                <h1>
+                    Welcome,
+                    {{ employee.name }} 👋
+                </h1>
+
+                <p>
+                    Here's an overview of your attendance.
+                </p>
+
+            </div>
+
+
+            <div class="employee-mini">
+
+                <div class="employee-mini-text">
+
+                    <strong>
+                        {{ employee.name }}
+                    </strong>
+
+                    <span>
+                        ID: {{ employee.employee_id }}
+                    </span>
+
+                </div>
+
+
+                <div class="avatar">
+
+                    {{ employee.name[:1].upper() }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             STAT CARDS
+        ================================================== -->
+
+        <div class="stats">
+
+
+            <!-- TOTAL PRESENT -->
+
+            <div class="stat-card">
+
+                <div class="stat-info">
+
+                    <span>
+                        Total Present
+                    </span>
+
+                    <strong>
+                        {{ total_present }}
+                    </strong>
+
+                </div>
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+            </div>
+
+
+            <!-- THIS MONTH -->
+
+            <div class="stat-card">
+
+                <div class="stat-info">
+
+                    <span>
+                        This Month
+                    </span>
+
+                    <strong>
+                        {{ this_month_present }}
+                    </strong>
+
+                </div>
+
+                <div class="stat-icon">
+                    📅
+                </div>
+
+            </div>
+
+
+            <!-- FACE STATUS -->
+
+            <div class="stat-card">
+
+                <div class="stat-info">
+
+                    <span>
+                        Face Recognition
+                    </span>
+
+                    {% if face_registered %}
+
+                        <strong>
+                            Ready
+                        </strong>
+
+                    {% else %}
+
+                        <strong>
+                            Not Ready
+                        </strong>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="stat-icon">
+
+                    {% if face_registered %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+
+        <div class="content-grid">
+
+
+            <!-- LEFT COLUMN -->
+
+            <div>
+
+
+                <!-- TODAY'S ATTENDANCE -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Today's Attendance
+                        </h2>
+
+                    </div>
+
+
+                    <div class="today-box">
+
+                        {% if today_attendance %}
+
+                            <div class="today-status">
+
+                                <div
+                                    class="status-icon success"
+                                >
+                                    ✓
+                                </div>
+
+                                <div class="status-text">
+
+                                    <strong>
+                                        Attendance Marked
+                                    </strong>
+
+                                    <span>
+
+                                        {{ today_attendance.attendance_time }}
+
+                                        ·
+
+                                        {{ today_attendance.method }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="today-status">
+
+                                <div
+                                    class="status-icon pending"
+                                >
+                                    !
+                                </div>
+
+                                <div class="status-text">
+
+                                    <strong>
+                                        Attendance Not Marked
+                                    </strong>
+
+                                    <span>
+                                        You haven't marked attendance today.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <a
+                                href="{{ url_for('employee_recognition') }}"
+                                class="attendance-button"
+                            >
+                                Mark Attendance
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT ATTENDANCE -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Recent Attendance
+                        </h2>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        {% if recent_attendance %}
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Time
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Method
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            {% for record in recent_attendance %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ record.attendance_date }}
+                                    </td>
+
+                                    <td>
+                                        {{ record.attendance_time }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if record.status == 'Present' %}
+
+                                            <span
+                                                class="status-badge status-present"
+                                            >
+                                                Present
+                                            </span>
+
+                                        {% else %}
+
+                                            <span
+                                                class="status-badge status-absent"
+                                            >
+                                                {{ record.status }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ record.method or '—' }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                        {% else %}
+
+                            <div class="empty">
+
+                                No attendance records found.
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+<!-- MONTHLY ATTENDANCE ANALYTICS -->
+
+<div class="card">
+
+    <div class="card-header">
+        <h2>Monthly Attendance</h2>
+    </div>
+
+    <p style="color: #667085; font-size: 13px; margin-bottom: 15px;">
+        Your present days over the last 6 months
+    </p>
+
+    <div style="height: 280px; position: relative;">
+        <canvas id="monthlyAttendanceChart"></canvas>
+    </div>
+
+</div>
+
+<!-- END MONTHLY ATTENDANCE ANALYTICS -->
+
+
+
+            <!-- RIGHT COLUMN -->
+
+            <div>
+
+
+                <!-- PROFILE SUMMARY -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            My Information
+                        </h2>
+
+                    </div>
+
+
+                    <div class="profile-row">
+
+                        <div class="profile-avatar">
+
+                            {{ employee.name[:1].upper() }}
+
+                        </div>
+
+
+                        <div class="profile-name">
+
+                            <strong>
+                                {{ employee.name }}
+                            </strong>
+
+                            <span>
+                                Employee ID:
+                                {{ employee.employee_id }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-list">
+
+
+                        <div class="info-item">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong>
+                                {{ employee.email or 'Not provided' }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-item">
+
+                            <span>
+                                Department
+                            </span>
+
+                            <strong>
+                                {{ employee.department or 'Not provided' }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-item">
+
+                            <span>
+                                Designation
+                            </span>
+
+                            <strong>
+                                {{ employee.designation or 'Not provided' }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-item">
+
+                            <span>
+                                Phone
+                            </span>
+
+                            <strong>
+                                {{ employee.phone or 'Not provided' }}
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- LAST ATTENDANCE -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Last Attendance
+                        </h2>
+
+                    </div>
+
+
+                    {% if last_attendance %}
+
+                        <div class="info-list">
+
+
+                            <div class="info-item">
+
+                                <span>
+                                    Date
+                                </span>
+
+                                <strong>
+                                    {{ last_attendance.attendance_date }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span>
+                                    Time
+                                </span>
+
+                                <strong>
+                                    {{ last_attendance.attendance_time }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span>
+                                    Status
+                                </span>
+
+                                <strong>
+
+                                    {{ last_attendance.status }}
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <span>
+                                    Method
+                                </span>
+
+                                <strong>
+
+                                    {{ last_attendance.method or '—' }}
+
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty">
+
+                            No attendance recorded yet.
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="monthly-attendance-data" type="application/json">{{ monthly_attendance | tojson }}</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById("monthlyAttendanceChart");
+
+    if (!canvas) {
+        console.error("Monthly attendance canvas not found.");
+        return;
+    }
+
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js failed to load.");
+        return;
+    }
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    const dataElement = document.getElementById("monthly-attendance-data");
+    const monthlyRecords = JSON.parse(dataElement?.textContent || "[]");
+
+    console.log("Monthly attendance data:", monthlyRecords);
+
+    const attendanceByMonth = new Map(
+        monthlyRecords.map(record => [
+            record.month_key,
+            Number(record.total)
+        ])
+    );
+
+    const labels = [];
+    const values = [];
+    const now = new Date();
+
+    for (let offset = 5; offset >= 0; offset--) {
+        const date = new Date(
+            now.getFullYear(),
+            now.getMonth() - offset,
+            1
+        );
+
+        const key =
+            date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2, "0");
+
+        labels.push(
+            date.toLocaleDateString("en-IN", {
+                month: "short",
+                year: "numeric"
+            })
+        );
+
+        values.push(attendanceByMonth.get(key) || 0);
+    }
+
+    new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Days Present",
+                data: values,
+                backgroundColor: "rgba(8, 127, 99, 0.75)",
+                borderColor: "#087f63",
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: "Days Present"
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+});
+</script>  
+</body>
+
+</html>

@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaceTrack | Employee Registration</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f6f8;
+    color:#172033;
+    min-height:100vh;
+}
+
+a{text-decoration:none;color:inherit}
+
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR - same style as Dashboard */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:238px;
+    background:#fff;
+    border-right:1px solid #e1e5e9;
+    display:flex;
+    flex-direction:column;
+}
+
+.brand{
+    height:78px;
+    padding:0 22px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #e1e5e9;
+}
+
+.brand-icon{
+    width:34px;
+    height:34px;
+    border:1px solid #cfd6dc;
+    border-radius:7px;
+    display:grid;
+    place-items:center;
+    margin-right:10px;
+    color:#087f63;
+}
+
+.brand-name{
+    font-size:19px;
+    font-weight:700;
+}
+
+.brand-name span{color:#087f63}
+
+.brand-sub{
+    font-size:10px;
+    color:#7b8490;
+    margin-top:3px;
+}
+
+.nav-area{padding:21px 13px}
+
+.nav-title{
+    color:#9aa2ac;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.9px;
+    padding:0 10px 8px;
+}
+
+.nav{
+    height:42px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:0 11px;
+    margin:3px 0;
+    border-radius:6px;
+    color:#344054;
+    font-size:13px;
+    border:1px solid transparent;
+}
+
+.nav:hover{background:#f7f8f9}
+
+.nav.active{
+    background:#edf6f2;
+    border-color:#d8ebe3;
+    color:#087f63;
+    font-weight:600;
+}
+
+.nav-icon{
+    width:19px;
+    text-align:center;
+    font-size:13px;
+}
+
+.nav-gap{height:20px}
+
+.sidebar-bottom{
+    margin-top:auto;
+    padding:14px;
+    border-top:1px solid #e1e5e9;
+}
+
+.admin-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px;
+    margin-bottom:8px;
+}
+
+.avatar{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#eef0f2;
+    color:#374151;
+    display:grid;
+    place-items:center;
+    font-weight:700;
+    font-size:12px;
+}
+
+.admin-name{
+    font-size:12px;
+    font-weight:600;
+}
+
+.admin-role{
+    font-size:10px;
+    color:#7b8490;
+    margin-top:2px;
+}
+
+.logout{color:#a52a2a}
+
+/* MAIN */
+.main{
+    margin-left:238px;
+    width:calc(100% - 238px);
+    min-width:0;
+}
+
+.topbar{
+    min-height:78px;
+    background:#fff;
+    border-bottom:1px solid #e1e5e9;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.page-title{
+    font-size:22px;
+    font-weight:700;
+}
+
+.page-sub{
+    font-size:12px;
+    color:#667085;
+    margin-top:4px;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.date{
+    font-size:12px;
+    color:#667085;
+}
+
+.top-admin{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding-left:16px;
+    border-left:1px solid #e1e5e9;
+}
+
+.top-admin strong{font-size:12px}
+
+.top-admin small{
+    display:block;
+    color:#7b8490;
+    font-size:10px;
+    margin-top:2px;
+}
+
+/* CONTENT */
+.content{
+    padding:28px 32px 45px;
+    max-width:1250px;
+}
+
+.form-panel{
+    background:#fff;
+    border:1px solid #dfe4e8;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.panel-header{
+    padding:20px 22px;
+    border-bottom:1px solid #e5e8eb;
+}
+
+.panel-title{
+    font-size:17px;
+    font-weight:700;
+}
+
+.panel-sub{
+    font-size:11px;
+    color:#7b8490;
+    margin-top:5px;
+}
+
+/* FORM */
+.section{
+    padding:22px;
+    border-bottom:1px solid #edf0f2;
+}
+
+.section:last-child{border-bottom:0}
+
+.section-title{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:17px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 20px;
+}
+
+.form-group label{
+    display:block;
+    color:#475467;
+    font-size:11px;
+    font-weight:600;
+    margin-bottom:7px;
+}
+
+.required{color:#a52a2a}
+
+input,
+select{
+    width:100%;
+    height:42px;
+    padding:0 12px;
+    border:1px solid #d4d9de;
+    border-radius:6px;
+    background:#fff;
+    color:#172033;
+    font-size:12px;
+    outline:none;
+}
+
+input::placeholder{color:#9aa2ac}
+
+input:focus,
+select:focus{
+    border-color:#087f63;
+    box-shadow:0 0 0 2px rgba(8,127,99,.08);
+}
+
+/* CAMERA */
+.camera-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1.5fr) minmax(240px,.7fr);
+    gap:18px;
+}
+
+.camera-box{
+    position:relative;
+    width:100%;
+    height:330px;
+    background:#f7f8f9;
+    border:1px solid #d7dce1;
+    border-radius:7px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+#camera{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+#capturedImage{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+.camera-placeholder{
+    text-align:center;
+    color:#7b8490;
+    font-size:12px;
+}
+
+.camera-placeholder .camera-icon{
+    width:52px;
+    height:52px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:#eef2f0;
+    display:grid;
+    place-items:center;
+    font-size:22px;
+    color:#087f63;
+}
+
+.camera-placeholder strong{
+    display:block;
+    color:#344054;
+    margin-bottom:5px;
+    font-size:13px;
+}
+
+.camera-side{
+    border:1px solid #e0e4e8;
+    border-radius:7px;
+    padding:17px;
+    background:#fafbfb;
+}
+
+.camera-side-title{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.camera-side p{
+    color:#667085;
+    font-size:11px;
+    line-height:1.6;
+    margin-bottom:13px;
+}
+
+.guidelines{
+    padding-left:17px;
+    color:#667085;
+    font-size:11px;
+    line-height:1.8;
+}
+
+.camera-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+
+button{
+    height:39px;
+    border-radius:6px;
+    padding:0 15px;
+    border:1px solid #d3d8dd;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.start-camera{
+    background:#087f63;
+    color:#fff;
+    border-color:#087f63;
+}
+
+.capture-camera{
+    background:#fff;
+    color:#344054;
+}
+
+.capture-camera:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.retake-camera{
+    background:#fff;
+    color:#344054;
+}
+
+.note{
+    color:#7b8490;
+    font-size:10px;
+    margin-top:9px;
+}
+
+.submit-area{
+    padding:20px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    background:#fafbfc;
+}
+
+.submit-button{
+    background:#087f63;
+    border-color:#087f63;
+    color:#fff;
+    min-width:170px;
+}
+
+.submit-button:hover{background:#076d55}
+
+.submit-button:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+
+@media(max-width:900px){
+    .camera-layout{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+    .sidebar{
+        position:relative;
+        width:190px;
+    }
+
+    .main{
+        margin-left:190px;
+        width:calc(100% - 190px);
+    }
+
+    .form-grid{grid-template-columns:1fr}
+    .topbar{padding:16px 18px}
+    .content{padding:20px 18px}
+    .top-right{display:none}
+}
+
+@media(max-width:600px){
+    .layout{display:block}
+    .sidebar{
+        width:100%;
+        position:relative;
+    }
+    .main{
+        margin-left:0;
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">◉</div>
+        <div>
+            <div class="brand-name">Face<span>Track</span></div>
+            <div class="brand-sub">Attendance Management</div>
+        </div>
+    </div>
+
+    <nav class="nav-area">
+
+        <div class="nav-title">Main</div>
+
+        <a href="/dashboard" class="nav">
+            <span class="nav-icon">⌂</span>
+            Dashboard
+        </a>
+
+        <a href="/employees" class="nav active">
+            <span class="nav-icon">♙</span>
+            Employees
+        </a>
+
+        <a href="/recognition" class="nav">
+            <span class="nav-icon">◉</span>
+            Face Recognition
+        </a>
+
+        <a href="/attendance" class="nav">
+            <span class="nav-icon">✓</span>
+            Attendance
+        </a>
+
+        <a href="/reports" class="nav">
+            <span class="nav-icon">▥</span>
+            Reports
+        </a>
+
+        <div class="nav-gap"></div>
+
+        <div class="nav-title">Administration</div>
+
+        <a href="/admin/registrations" class="nav">
+            <span class="nav-icon">✎</span>
+            Registration Requests
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <div class="admin-box">
+            <div class="avatar">
+                {{ (session.get('admin_name','A')[:1] or 'A')|upper }}
+            </div>
+
+            <div>
+                <div class="admin-name">
+                    {{ session.get('admin_name','Admin') }}
+                </div>
+                <div class="admin-role">Administrator</div>
+            </div>
+        </div>
+
+        <a href="/logout" class="nav logout">
+            <span class="nav-icon">↪</span>
+            Logout
+        </a>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+    <div>
+        <div class="page-title">Employee Registration</div>
+        <div class="page-sub">
+            Register a employee and capture their face for attendance recognition.
+        </div>
+    </div>
+
+    <div class="top-right">
+
+        <div class="date" id="currentDate"></div>
+
+        <div class="top-admin">
+            <div class="avatar">
+                {{ (session.get('admin_name','A')[:1] or 'A')|upper }}
+            </div>
+
+            <div>
+                <strong>{{ session.get('admin_name','Admin') }}</strong>
+                <small>Administrator</small>
+            </div>
+        </div>
+
+    </div>
+
+</header>
+
+<div class="content">
+
+<form
+    action="/employee/register"
+    method="POST"
+    enctype="multipart/form-data"
+    id="employeeForm"
+>
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+{% if error %}
+<div style="
+    margin: 0 22px 18px;
+    padding: 12px 14px;
+    background: #fff3f3;
+    border: 1px solid #f0caca;
+    border-radius: 6px;
+    color: #a52a2a;
+    font-size: 12px;
+">
+    {{ error }}
+</div>
+{% endif %}
+
+<div class="form-panel">
+
+    <div class="panel-header">
+        <div class="panel-title">Register New Employee</div>
+        <div class="panel-sub">
+            Enter the employee's information and capture one clear face image.
+        </div>
+    </div>
+
+    <!-- EMPLOYEE INFORMATION -->
+    <section class="section">
+
+        <div class="section-title">Employee Information</div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="employee_id">
+                    Employee ID <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="employee_id"
+                    name="employee_id"
+                    placeholder="Example: STU002"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="name">
+                    Full Name <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="employee@example.com"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter phone number"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+
+                <input
+                    type="text"
+                    id="department"
+                    name="department"
+                    placeholder="Example: B.Tech CSE"
+                >
+            </div>
+
+            
+<div class="form-group">
+    <label for="designation">Designation</label>
+
+    <input
+        type="text"
+        id="designation"
+        name="designation"
+        placeholder="Example: Software Engineer"
+    >
+</div>
+
+
+            <div class="form-group">
+                <label for="password">
+                    Create Password <span class="required">*</span>
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Minimum 6 characters"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">
+                    Confirm Password <span class="required">*</span>
+                </label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Re-enter password"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FACE REGISTRATION -->
+    <section class="section">
+
+        <div class="section-title">Face Registration</div>
+
+        <div class="camera-layout">
+
+            <div>
+
+                <div class="camera-box">
+
+                    <video
+                        id="camera"
+                        autoplay
+                        playsinline
+                        muted
+                    ></video>
+
+                    <img
+                        id="capturedImage"
+                        alt="Captured Selfie"
+                    >
+
+                    <div
+                        class="camera-placeholder"
+                        id="cameraPlaceholder"
+                    >
+                        <div class="camera-icon">◉</div>
+                        <strong>Camera is ready</strong>
+                        Click <b>Start Camera</b> to begin.
+                    </div>
+
+                </div>
+
+                <div class="camera-buttons">
+
+                    <button
+                        type="button"
+                        class="start-camera"
+                        id="startCamera"
+                    >
+                        Start Camera
+                    </button>
+
+                    <button
+                        type="button"
+                        class="capture-camera"
+                        id="capturePhoto"
+                        disabled
+                    >
+                        Capture Selfie
+                    </button>
+
+                    <button
+                        type="button"
+                        class="retake-camera"
+                        id="retakePhoto"
+                        style="display:none;"
+                    >
+                        Retake
+                    </button>
+
+                </div>
+
+                <p class="note">
+                    Make sure your face is clearly visible and only one person
+                    appears in the camera.
+                </p>
+
+            </div>
+
+            <div class="camera-side">
+
+                <div class="camera-side-title">
+                    Photo Guidelines
+                </div>
+
+                <p>
+                    A clear face image is required for recognition.
+                    Please position yourself in front of the camera.
+                </p>
+
+                <ul class="guidelines">
+                    <li>Face the camera directly.</li>
+                    <li>Use good lighting.</li>
+                    <li>Keep your face uncovered.</li>
+                    <li>Only one person should be visible.</li>
+                    <li>Avoid blurry images.</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+        <input
+            type="file"
+            name="selfie"
+            id="selfie"
+            accept=".jpg,.jpeg,.png"
+            required
+            style="display:none;"
+        >
+
+    </section>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+
+        <p class="note">
+            Your application will remain Pending until an administrator reviews it.
+        </p>
+
+        <button
+            type="submit"
+            class="submit-button"
+            id="submitButton"
+        >
+            Submit Registration
+        </button>
+
+    </div>
+
+</div>
+
+</form>
+
+</div>
+
+</main>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+let stream = null;
+
+const camera = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const capturedImage = document.getElementById("capturedImage");
+const placeholder = document.getElementById("cameraPlaceholder");
+const startCamera = document.getElementById("startCamera");
+const capturePhoto = document.getElementById("capturePhoto");
+const retakePhoto = document.getElementById("retakePhoto");
+const selfieInput = document.getElementById("selfie");
+const form = document.getElementById("employeeForm");
+
+async function openCamera() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: "user"
+            },
+            audio: false
+        });
+
+        camera.srcObject = stream;
+
+        camera.style.display = "block";
+        capturedImage.style.display = "none";
+        placeholder.style.display = "none";
+
+        capturePhoto.disabled = false;
+        retakePhoto.style.display = "none";
+
+        startCamera.textContent = "Camera Running";
+    }
+    catch(error) {
+        console.error(error);
+
+        alert(
+            "Unable to access camera. Please allow camera permission in your browser."
+        );
+    }
+}
+
+startCamera.addEventListener("click", openCamera);
+
+capturePhoto.addEventListener("click", function() {
+
+    if (!stream) {
+        alert("Please start the camera first.");
+        return;
+    }
+
+    if (!camera.videoWidth || !camera.videoHeight) {
+        alert("Camera is not ready yet. Please wait a moment and try again.");
+        return;
+    }
+
+    canvas.width = camera.videoWidth;
+    canvas.height = camera.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    context.drawImage(
+        camera,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    canvas.toBlob(function(blob) {
+
+        if (!blob) {
+            alert("Could not capture the selfie.");
+            return;
+        }
+
+        const file = new File(
+            [blob],
+            "employee_selfie.jpg",
+            { type: "image/jpeg" }
+        );
+
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(file);
+
+        selfieInput.files = dataTransfer.files;
+
+        capturedImage.src = URL.createObjectURL(blob);
+
+        camera.style.display = "none";
+        capturedImage.style.display = "block";
+
+        capturePhoto.disabled = true;
+        retakePhoto.style.display = "inline-block";
+
+        stopCamera();
+
+    }, "image/jpeg", 0.92);
+});
+
+retakePhoto.addEventListener("click", async function() {
+
+    selfieInput.value = "";
+    capturedImage.removeAttribute("src");
+    capturedImage.style.display = "none";
+
+    await openCamera();
+});
+
+function stopCamera() {
+
+    if (stream) {
+
+        stream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+        stream = null;
+    }
+}
+
+form.addEventListener("submit", function(event) {
+
+    const employeeId =
+        document.getElementById("employee_id").value.trim();
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    if (!employeeId) {
+        event.preventDefault();
+        alert("Please enter your Employee ID.");
+        document.getElementById("employee_id").focus();
+        return;
+    }
+
+    if (!name) {
+        event.preventDefault();
+        alert("Please enter your full name.");
+        document.getElementById("name").focus();
+        return;
+    }
+
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm_password").value;
+
+    if (password.length < 6) {
+        event.preventDefault();
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        event.preventDefault();
+        alert("Passwords do not match.");
+        return;
+    }
+
+    if (!selfieInput.files.length) {
+        event.preventDefault();
+        alert("Please capture your selfie before submitting.");
+        return;
+    }
+
+    const submitButton =
+        document.getElementById("submitButton");
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+});
+
+window.addEventListener("beforeunload", function() {
+    stopCamera();
+});
+
+document.getElementById("currentDate").textContent =
+    new Date().toLocaleDateString("en-IN", {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+</script>
+
+</body>
+</html>
