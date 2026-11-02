@@ -1,0 +1,13 @@
+flask
+gunicorn
+python-dotenv
+mysql-connector-python
+numpy
+opencv-python-headless
+Pillow
+holidays
+reportlab
+openpyxl
+dlib-bin
+face_recognition_models
+Click
